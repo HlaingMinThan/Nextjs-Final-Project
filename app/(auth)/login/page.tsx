@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
+import Button from "@/components/Button";
 import Input from "@/components/Input";
 import github from "@/public/github.png";
 import google from "@/public/google.webp";
@@ -24,9 +25,7 @@ function page() {
             illo molestias officiis dolorem. Vel, earum fugiat esse tempore
             reprehenderit saepe?
           </p>
-          <button className="w-full rounded-lg border-2 border-main px-4 py-2">
-            Create a new account ?
-          </button>
+          <Button type="outline">Create a new account ?</Button>
         </div>
       </div>
       <div className="flex h-screen w-2/4 items-center justify-center ">
@@ -34,26 +33,22 @@ function page() {
           <h3 className="text-xl font-semibold">
             Sign in to Creative <span className="text-main">Coder</span> Forum
           </h3>
-          <div className="space-y-3">
+          <div>
             <Input label="Email Address" />
           </div>
-          <div className="space-y-3">
+          <div>
             <Input label="Password" />
           </div>
           <div>
-            <button className="w-full rounded-lg bg-main px-4 py-2">
-              Login
-            </button>
+            <Button>Login</Button>
           </div>
           <div className="flex space-x-3">
-            <button className="flex w-full items-center space-x-3 rounded-lg border-2 border-main px-4 py-2">
-              <Image src={google} alt="google icon" width={30} height={30} />
-              <span>Login with Google</span>
-            </button>
-            <button className="flex w-full items-center space-x-3 rounded-lg border-2 border-main px-4 py-2">
-              <Image src={github} alt="google icon" width={30} height={30} />
-              <span>Login with Github</span>
-            </button>
+            <Button type="outline" icon={google}>
+              Login with Google
+            </Button>
+            <Button type="outline" icon={github}>
+              Login with Github
+            </Button>
           </div>
         </div>
       </div>
