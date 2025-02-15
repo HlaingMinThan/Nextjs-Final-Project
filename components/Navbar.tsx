@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
+import Input from "./Input";
 import logo from "../public/logo.jpg";
 import profile from "../public/profile.jpg";
 
@@ -19,12 +20,8 @@ function Navbar() {
           Creative <span className="text-main">Coder</span>
         </h1>
       </div>
-      <div>
-        <input
-          type="text"
-          className="w-[600px] rounded-md bg-primary px-4 py-2"
-          placeholder="search anything globally"
-        />
+      <div className="w-[600px]">
+        <Input placeholder={"search anything globally"} />
       </div>
       <div>
         <Image
