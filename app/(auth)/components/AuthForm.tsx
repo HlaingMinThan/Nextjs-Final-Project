@@ -1,5 +1,6 @@
 import React from "react";
 
+import { signIn } from "@/auth";
 import Button from "@/components/Button";
 import github from "@/public/github.png";
 import google from "@/public/google.webp";
@@ -10,9 +11,17 @@ function AuthForm() {
       <Button type="outline" icon={google}>
         Login with Google
       </Button>
-      <Button type="outline" icon={github}>
-        Login with Github
-      </Button>
+      <form
+        className="w-full"
+        action={async () => {
+          "use server";
+          await signIn("github");
+        }}
+      >
+        <Button type="outline" icon={github}>
+          Login with Github
+        </Button>
+      </form>
     </div>
   );
 }
