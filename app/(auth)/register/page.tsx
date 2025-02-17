@@ -25,14 +25,20 @@ function page() {
             illo molestias officiis dolorem. Vel, earum fugiat esse tempore
             reprehenderit saepe?
           </p>
-          <Button type="outline">Create a new account ?</Button>
+          <Button type="outline">Login account ?</Button>
         </div>
       </div>
       <div className="flex h-screen w-2/4 items-center justify-center ">
         <div className="w-4/5 space-y-6">
           <h3 className="text-xl font-semibold">
-            Sign in to Creative <span className="text-main">Coder</span> Forum
+            Sign Up to Creative <span className="text-main">Coder</span> Forum
           </h3>
+          <div>
+            <Input label="Name" />
+          </div>
+          <div>
+            <Input label="Username" />
+          </div>
           <div>
             <Input label="Email Address" />
           </div>
@@ -40,7 +46,7 @@ function page() {
             <Input label="Password" />
           </div>
           <div>
-            <Button>Login</Button>
+            <Button>Register</Button>
           </div>
           <AuthForm />
         </div>
