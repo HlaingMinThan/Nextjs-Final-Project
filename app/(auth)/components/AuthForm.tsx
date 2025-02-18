@@ -1,27 +1,43 @@
+"use client";
+import { signIn } from "next-auth/react";
 import React from "react";
+import { Bounce, toast } from "react-toastify";
 
-import { signIn } from "@/auth";
 import Button from "@/components/Button";
 import github from "@/public/github.png";
 import google from "@/public/google.webp";
 
 function AuthForm() {
+  const oauthSignIn = async () => {
+    try {
+      await signIn("github", {
+        redirectTo: "/",
+      });
+    } catch (e) {
+      if (e instanceof Error) {
+        toast.error(e.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+      }
+    }
+  };
   return (
     <div className="flex space-x-3">
-      <Button type="outline" icon={google}>
+      <Button variant="outline" icon={google}>
         Login with Google
       </Button>
-      <form
-        className="w-full"
-        action={async () => {
-          "use server";
-          await signIn("github");
-        }}
-      >
-        <Button type="outline" icon={github}>
-          Login with Github
-        </Button>
-      </form>
+
+      <Button variant="outline" icon={github} onClick={oauthSignIn}>
+        Login with Github
+      </Button>
     </div>
   );
 }
