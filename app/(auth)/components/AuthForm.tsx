@@ -8,9 +8,9 @@ import github from "@/public/github.png";
 import google from "@/public/google.webp";
 
 function AuthForm() {
-  const oauthSignIn = async () => {
+  const oauthSignIn = async (type: "google" | "github") => {
     try {
-      await signIn("github", {
+      await signIn(type, {
         redirectTo: "/",
       });
     } catch (e) {
@@ -31,11 +31,19 @@ function AuthForm() {
   };
   return (
     <div className="flex space-x-3">
-      <Button variant="outline" icon={google}>
+      <Button
+        variant="outline"
+        icon={google}
+        onClick={() => oauthSignIn("google")}
+      >
         Login with Google
       </Button>
 
-      <Button variant="outline" icon={github} onClick={oauthSignIn}>
+      <Button
+        variant="outline"
+        icon={github}
+        onClick={() => oauthSignIn("github")}
+      >
         Login with Github
       </Button>
     </div>
