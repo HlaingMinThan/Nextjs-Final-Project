@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 
 import Input from "./Input";
+import SearchInput from "./SearchInput";
 import logo from "../public/logo.jpg";
 import profile from "../public/profile.jpg";
 
@@ -21,7 +22,7 @@ function Navbar() {
         </h1>
       </div>
       <div className="w-[600px]">
-        <Input placeholder={"search anything globally"} />
+        <SearchInput />
       </div>
       <div>
         <Image
