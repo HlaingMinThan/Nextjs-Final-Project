@@ -5,6 +5,7 @@ import React from "react";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import logo from "@/public/logo.jpg";
+import ROUTES from "@/routes";
 
 import AuthForm from "../components/AuthForm";
 
@@ -13,7 +14,7 @@ function page() {
     <div className="flex">
       <div className="flex h-screen w-2/4 items-center  bg-primary p-10">
         <div className="space-y-10">
-          <Link href={"/"} className="flex items-center space-x-4">
+          <Link href={ROUTES.HOME} className="flex items-center space-x-4">
             <Image src={logo} width={100} height={100} alt="logo" />
             <h1 className="text-5xl font-semibold">
               Creative <span className="text-main">Coder</span> Form
@@ -25,7 +26,7 @@ function page() {
             illo molestias officiis dolorem. Vel, earum fugiat esse tempore
             reprehenderit saepe?
           </p>
-          <Button type="outline">Login account ?</Button>
+          <Button variant="outline">Login account ?</Button>
         </div>
       </div>
       <div className="flex h-screen w-2/4 items-center justify-center ">

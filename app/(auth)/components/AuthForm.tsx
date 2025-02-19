@@ -6,12 +6,13 @@ import { Bounce, toast } from "react-toastify";
 import Button from "@/components/Button";
 import github from "@/public/github.png";
 import google from "@/public/google.webp";
+import ROUTES from "@/routes";
 
 function AuthForm() {
   const oauthSignIn = async (type: "google" | "github") => {
     try {
       await signIn(type, {
-        redirectTo: "/",
+        redirectTo: ROUTES.HOME,
       });
     } catch (e) {
       if (e instanceof Error) {
