@@ -1,5 +1,7 @@
 import { auth } from "@/auth";
+import Button from "@/components/Button";
 import Filters from "@/components/Filters";
+import ThreadCard from "@/components/ThreadCard";
 
 async function page({
   searchParams,
@@ -14,9 +16,16 @@ async function page({
   console.log(session);
   return (
     <>
-      <h1>Search: {search}</h1>
-      <h1>Filter: {filter}</h1>
+      <div className="flex items-center justify-between p-5">
+        <div>
+          <h1 className="text-3xl font-bold">All Threads</h1>
+        </div>
+        <div>
+          <Button>Create new thread</Button>
+        </div>
+      </div>
       <Filters />
+      <ThreadCard />
     </>
   );
 }
