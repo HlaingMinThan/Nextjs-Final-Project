@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import { AiFillLike } from "react-icons/ai";
 import { IoMdEye } from "react-icons/io";
@@ -7,23 +6,15 @@ import { MdQuestionAnswer } from "react-icons/md";
 
 import profile from "@/public/profile.jpg";
 
+import TagCard from "./TagCard";
+
 function ThreadCard() {
   return (
     <div className="space-y-7 rounded-xl bg-card px-10 py-5">
       <h1 className="text-xl font-bold">What is vue js ? how does it work ?</h1>
       <div className="space-x-3">
-        <Link
-          href={"/?filter" + "vue"}
-          className={`w-[100px] rounded-xl bg-tertiary px-4 py-2 text-gray-300`}
-        >
-          Vue
-        </Link>
-        <Link
-          href={"/?filter" + "react"}
-          className={`w-[100px] rounded-xl bg-tertiary px-4 py-2 text-gray-300`}
-        >
-          React
-        </Link>
+        <TagCard href="/filters/vue">Vue</TagCard>
+        <TagCard href="/filters/react">React</TagCard>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3 text-[14px] text-gray-300">
