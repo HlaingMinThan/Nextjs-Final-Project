@@ -10,7 +10,7 @@ function LeftSidebar() {
       <ul className="space-y-6">
         <li className="rounded-xl bg-main p-3">
           <Link
-            href={ROUTES.QUESTIONS}
+            href={ROUTES.HOME}
             className="flex items-center space-x-4 text-[16px] font-bold"
           >
             <FaHome />
