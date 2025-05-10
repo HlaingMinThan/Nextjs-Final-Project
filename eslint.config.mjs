@@ -22,6 +22,7 @@ export default [
   ),
   {
     rules: {
+      "no-undef": "off",
       "import/order": [
         "error",
         {
