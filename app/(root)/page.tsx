@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import ButtonLink from "@/components/ButtonLink";
 import Filters from "@/components/Filters";
 import ThreadCard from "@/components/ThreadCard";
+import { api } from "@/lib/api";
 import fetchHandler from "@/lib/fetchHandler";
 import ROUTES from "@/routes";
 
@@ -15,8 +16,8 @@ async function page({
 }) {
   const session = await auth();
   const { search, filter } = await searchParams;
-  const response = await fetchHandler("http://localhost:3000/api/users");
-  console.log(response);
+  const { data } = await api.users.getByEmail("hmt123@gmail.com");
+  console.log(data);
   console.log(session);
   return (
     <>
