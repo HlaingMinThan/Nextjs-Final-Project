@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const SignInWithOauthSchema = z.object({
+const SigninWithOauthSchema = z.object({
   provider: z.enum(["google", "github"]),
   providerAccountId: z
     .string()
@@ -15,4 +15,4 @@ const SignInWithOauthSchema = z.object({
   }),
 });
 
-export default SignInWithOauthSchema;
+export default SigninWithOauthSchema;

@@ -5,7 +5,7 @@ import Account from "@/database/account.model";
 import User from "@/database/user.model";
 import dbConnect from "@/lib/dbConnect";
 import { handleSuccessResponse } from "@/lib/response";
-import SignInWithOauthSchema from "@/lib/schemas/SigninWithOauthSchema";
+import SigninWithOauthSchema from "@/lib/schemas/SigninWithOauthSchema";
 import validateBody from "@/lib/validateBody";
 
 export async function POST(request: Request) {
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         providerAccountId,
         user,
       },
-      SignInWithOauthSchema
+      SigninWithOauthSchema
     );
 
     const { email, image, name, username } = validatedData.data.user;

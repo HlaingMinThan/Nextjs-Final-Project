@@ -49,10 +49,10 @@ export const api = {
         body: JSON.stringify(data),
       }),
     getById: (id: string) => fetchHandler(API_URL + "/accounts/" + id),
-    getByProvider: (provider: string) =>
+    getByProvider: (providerAccountId: string) =>
       fetchHandler(API_URL + "/accounts/provider", {
         method: "POST",
-        body: JSON.stringify({ provider }),
+        body: JSON.stringify({ providerAccountId }),
       }),
     update: (
       id: string,
@@ -74,7 +74,7 @@ export const api = {
         method: "DELETE",
       }),
   },
-  api: {
+  auth: {
     oauthSignIn: ({
       provider,
       providerAccountId,

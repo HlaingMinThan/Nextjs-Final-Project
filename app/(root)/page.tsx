@@ -16,8 +16,6 @@ async function page({
 }) {
   const session = await auth();
   const { search, filter } = await searchParams;
-  const { data } = await api.users.getByEmail("hmt123@gmail.com");
-  console.log(data);
   console.log(session);
   return (
     <>
