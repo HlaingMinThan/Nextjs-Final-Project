@@ -3,11 +3,10 @@ import Link from "next/link";
 import React from "react";
 
 import Button from "@/components/Button";
-import Input from "@/components/Input";
+
 import logo from "@/public/logo.jpg";
 import ROUTES from "@/routes";
-
-import AuthForm from "../components/AuthForm";
+import RegisterForm from "../components/RegisterForm";
 
 function page() {
   return (
@@ -30,27 +29,7 @@ function page() {
         </div>
       </div>
       <div className="flex h-screen w-2/4 items-center justify-center ">
-        <div className="w-4/5 space-y-6">
-          <h3 className="text-xl font-semibold">
-            Sign Up to Creative <span className="text-main">Coder</span> Forum
-          </h3>
-          <div>
-            <Input label="Name" />
-          </div>
-          <div>
-            <Input label="Username" />
-          </div>
-          <div>
-            <Input label="Email Address" />
-          </div>
-          <div>
-            <Input label="Password" />
-          </div>
-          <div>
-            <Button>Register</Button>
-          </div>
-          <AuthForm />
-        </div>
+        <RegisterForm />
       </div>
     </div>
   );

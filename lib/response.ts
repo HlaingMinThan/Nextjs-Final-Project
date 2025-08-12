@@ -31,4 +31,18 @@ const handleErrorResponse = (e: unknown) => {
   );
 };
 
-export { handleSuccessResponse, handleErrorResponse };
+const actionError = (e: unknown) => {
+  let message = e instanceof Error ? e.message : "Internal Server Error";
+  let details = null;
+  if (e instanceof ZodError) {
+    details = e.flatten().fieldErrors;
+    message = "Validation Error";
+  }
+  return {
+    message,
+    success: false,
+    details,
+  };
+};
+
+export { handleSuccessResponse, handleErrorResponse, actionError };
