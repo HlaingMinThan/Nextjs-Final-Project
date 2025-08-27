@@ -8,6 +8,8 @@ import logo from "@/public/logo.jpg";
 import ROUTES from "@/routes";
 
 import AuthForm from "../components/AuthForm";
+import AuthenticationForm from "../components/AuthenticationForm";
+import { signInWithCredentials } from "@/lib/actions/SignInWithCredentials.action";
 
 function page() {
   return (
@@ -30,21 +32,10 @@ function page() {
         </div>
       </div>
       <div className="flex h-screen w-2/4 items-center justify-center ">
-        <div className="w-4/5 space-y-6">
-          <h3 className="text-xl font-semibold">
-            Sign in to Creative <span className="text-main">Coder</span> Forum
-          </h3>
-          <div>
-            <Input label="Email Address" />
-          </div>
-          <div>
-            <Input label="Password" />
-          </div>
-          <div>
-            <Button>Login</Button>
-          </div>
-          <AuthForm />
-        </div>
+        <AuthenticationForm
+          type="login"
+          submitAction={signInWithCredentials}
+        ></AuthenticationForm>
       </div>
     </div>
   );

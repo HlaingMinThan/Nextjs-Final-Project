@@ -5,7 +5,7 @@ import Button from "@/components/Button";
 import React, { useState } from "react";
 import AuthForm from "./AuthForm";
 import Input from "@/components/Input";
-import { signUpWithCredentials } from "@/lib/actions/SignUpWithCredentials.action";
+
 import { useRouter } from "next/navigation";
 import ROUTES from "@/routes";
 
@@ -23,7 +23,13 @@ interface FormErrors {
   password?: string[];
 }
 
-function RegisterForm() {
+function AuthenticationForm({
+  type,
+  submitAction,
+}: {
+  type: "login" | "register";
+  submitAction: Function;
+}) {
   let [formData, setFormData] = useState<FormData>({
     name: "",
     username: "",
@@ -34,56 +40,64 @@ function RegisterForm() {
 
   let router = useRouter();
 
-  let register = async (e: React.FormEvent<HTMLFormElement>) => {
+  let submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors(null);
-    let result = await signUpWithCredentials(formData);
+    let result = await submitAction(formData);
     if (result.success) {
       console.log("success");
       router.push(ROUTES.HOME);
     } else {
       if ("details" in result && result.details) {
-        setErrors(result.details as FormErrors);
+        return setErrors(result.details as FormErrors);
       }
       if ("message" in result && result.message === "Email Already Exists") {
-        setErrors({
+        return setErrors({
           email: [result.message],
         });
       }
       if ("message" in result && result.message === "Username Already Exists") {
-        setErrors({
+        return setErrors({
           username: [result.message],
         });
       }
+      setErrors({
+        password: [result.message],
+      });
     }
   };
   return (
-    <form className="w-4/5 space-y-6" onSubmit={register}>
+    <form className="w-4/5 space-y-6" onSubmit={submit}>
       <h3 className="text-xl font-semibold">
-        Sign Up to Creative <span className="text-main">Coder</span> Forum
+        Sign {type === "login" ? "In" : "Up"} to Creative{" "}
+        <span className="text-main">Coder</span> Forum
       </h3>
-      <div>
-        <Input
-          label="Name"
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, name: e.target.value }))
-          }
-        />
-        {errors?.name && (
-          <p className="my-2 text-xs text-red-500">{errors.name[0]}</p>
-        )}
-      </div>
-      <div>
-        <Input
-          label="Username"
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, username: e.target.value }))
-          }
-        />
-        {errors?.username && (
-          <p className="my-2 text-xs text-red-500">{errors.username[0]}</p>
-        )}
-      </div>
+      {type === "register" && (
+        <>
+          <div>
+            <Input
+              label="Name"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
+            />
+            {errors?.name && (
+              <p className="my-2 text-xs text-red-500">{errors.name[0]}</p>
+            )}
+          </div>
+          <div>
+            <Input
+              label="Username"
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, username: e.target.value }))
+              }
+            />
+            {errors?.username && (
+              <p className="my-2 text-xs text-red-500">{errors.username[0]}</p>
+            )}
+          </div>
+        </>
+      )}
       <div>
         <Input
           label="Email Address"
@@ -107,11 +121,11 @@ function RegisterForm() {
         )}
       </div>
       <div>
-        <Button type="submit">Register</Button>
+        <Button type="submit">{type === "login" ? "Login" : "Register"}</Button>
       </div>
       <AuthForm />
     </form>
   );
 }
 
-export default RegisterForm;
+export default AuthenticationForm;
