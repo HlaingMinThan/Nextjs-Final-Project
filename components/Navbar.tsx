@@ -4,9 +4,13 @@ import React from "react";
 import Input from "./Input";
 import SearchInput from "./SearchInput";
 import logo from "../public/logo.jpg";
-import profile from "../public/profile.jpg";
 
-function Navbar() {
+import { auth } from "@/auth";
+
+async function Navbar() {
+  let session = await auth();
+  let user = session?.user;
+
   return (
     <nav className="flex justify-between px-10 py-6">
       <div className="flex items-center justify-center space-x-4">
@@ -25,13 +29,15 @@ function Navbar() {
         <SearchInput />
       </div>
       <div>
-        <Image
-          src={profile}
-          width={45}
-          height={45}
-          className="aspect-square rounded-full object-cover"
-          alt="logo"
-        />
+        {user && (
+          <Image
+            src={user?.image}
+            width={45}
+            height={45}
+            className="aspect-square rounded-full object-cover"
+            alt="logo"
+          />
+        )}
       </div>
     </nav>
   );
