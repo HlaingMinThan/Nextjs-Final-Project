@@ -10,11 +10,21 @@ import { toast, Bounce } from "react-toastify";
 import { QuestionCreate } from "@/lib/actions/QuestionCreate.action";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/routes";
+import { IQuestion } from "@/database/question.model";
+import { QuestionEdit } from "@/lib/actions/QuestionEdit.action";
 
-function QuestionForm() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState<string[]>(["react", "vue"]);
+function QuestionForm({
+  question,
+  isEdit = false,
+}: {
+  question: IQuestion;
+  isEdit: boolean;
+}) {
+  const [title, setTitle] = useState(question?.title ?? "");
+  const [content, setContent] = useState(question?.content ?? "");
+  const [tags, setTags] = useState<string[]>(
+    question?.tags.map((tag) => tag.name)
+  );
   const [error, setError] = useState("");
   const [newTag, setNewTag] = useState("");
 
@@ -35,6 +45,29 @@ function QuestionForm() {
   let submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      if (isEdit && question) {
+        let result = await QuestionEdit({
+          questionId: question._id as string,
+          title,
+          content,
+          tags,
+        });
+        if (result.success && result.data) {
+          toast.success("Question Updated successfully.", {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            transition: Bounce,
+          });
+          return router.push(ROUTES.QUESTION_DETAILS(result.data?._id));
+        }
+        return;
+      }
       let result = await QuestionCreate({
         title,
         content,
@@ -101,7 +134,7 @@ function QuestionForm() {
           </TagCard>
         ))}
       </div>
-      <Button type="submit">Create</Button>
+      <Button type="submit">{isEdit ? "Update" : "Create"}</Button>
     </form>
   );
 }

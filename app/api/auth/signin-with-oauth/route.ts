@@ -5,7 +5,7 @@ import Account from "@/database/account.model";
 import User from "@/database/user.model";
 import dbConnect from "@/lib/dbConnect";
 import { handleSuccessResponse } from "@/lib/response";
-import SigninWithOauthSchema from "@/lib/schemas/SigninWithOauthSchema";
+import SigninWithOauthSchema from "@/lib/schemas/SignInWithOauthSchema";
 import validateBody from "@/lib/validateBody";
 
 export async function POST(request: Request) {
