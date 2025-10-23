@@ -8,7 +8,7 @@ import validateBody from "../validateBody";
 import { auth } from "@/auth";
 import { actionError } from "../response";
 import TagQuestion from "@/database/tag-question.model";
-import Tag from "@/database/tag.model";
+import Tag, { ITagDoc } from "@/database/tag.model";
 
 export async function QuestionEdit(params: {
   questionId: string;
@@ -43,9 +43,71 @@ export async function QuestionEdit(params: {
     if (question.title !== title || question.content !== content) {
       question.title = title;
       question.content = content;
-      await question.save();
+      await question.save({ session });
     }
 
+    const tagsToAdd = tags.filter(
+      (tag: string) => !question.tags.includes(tag.toLowerCase())
+    );
+    const tagsToRemove = question.tags.filter(
+      (tag: ITagDoc) => !tags.includes(tag.name.toLowerCase())
+    );
+
+    if (tagsToRemove.length) {
+      const tagIdsToRemove = tagsToRemove.map((tag: ITagDoc) => tag._id);
+
+      await Tag.updateMany(
+        { _id: { $in: tagIdsToRemove } },
+        { $inc: { questions: -1 } },
+        { session }
+      );
+
+      await TagQuestion.deleteMany({
+        tag: { $in: tagIdsToRemove },
+        question: questionId,
+      });
+
+      question.tags = question.tags.filter(
+        (tagId: mongoose.Types.ObjectId) => !tagsToRemove.includes(tagId)
+      );
+    }
+
+    if (tagsToAdd.length) {
+      const newTagDocuments = []; //TagQuestion 3
+      for (const tag of tagsToAdd) {
+        let existingTag = await Tag.findOneAndUpdate(
+          {
+            name: { $regex: new RegExp(`^${tag}$`, "i") },
+          },
+          { $setOnInsert: { name: tag }, $inc: { questions: 1 } },
+          { upsert: true, new: true, session }
+        );
+        if (existingTag) {
+          const existingTagQuestion = await TagQuestion.findOne({
+            tag: existingTag._id,
+            question: questionId,
+          });
+          if (!existingTagQuestion) {
+            newTagDocuments.push({
+              tag: existingTag._id,
+              question: questionId,
+            });
+          }
+        }
+
+        if (
+          !question.tags.find((tagId: mongoose.Types.ObjectId) =>
+            tagId.equals(existingTag._id)
+          )
+        ) {
+          question.tags.push(existingTag._id);
+        }
+      }
+      if (newTagDocuments.length) {
+        await TagQuestion.insertMany(newTagDocuments);
+      }
+    }
+    await question.save({ session });
     await session.commitTransaction();
 
     return { success: true, data: JSON.parse(JSON.stringify(question)) };
