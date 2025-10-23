@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import Button from "@/components/Button";
 import Editor from "@/components/Editor";
 import Input from "@/components/Input";
-import TagCard from "@/components/TagCard";
+import RemovableTagCard from "@/components/RemovableTagCard";
 import { toast, Bounce } from "react-toastify";
 import { QuestionCreate } from "@/lib/actions/QuestionCreate.action";
 import { useRouter } from "next/navigation";
@@ -103,6 +103,11 @@ function QuestionForm({
       }
     }
   };
+  let removeTag = (tag: string) => {
+    setTags((prevTags) => {
+      return prevTags.filter((eachTag) => eachTag != tag);
+    });
+  };
   return (
     <form className="space-y-5" onSubmit={submit}>
       <h1 className="text-2xl font-bold">Ask A New Question?</h1>
@@ -127,11 +132,11 @@ function QuestionForm({
         text="Please press enter to add a new tag."
       />
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <div className="mt-5 space-x-3">
+      <div className="mt-5 space-x-3 flex">
         {tags.map((tag, i) => (
-          <TagCard key={i} href="/filters/vue">
+          <RemovableTagCard key={tag} onRemove={() => removeTag(tag)}>
             {tag}
-          </TagCard>
+          </RemovableTagCard>
         ))}
       </div>
       <Button type="submit">{isEdit ? "Update" : "Create"}</Button>
