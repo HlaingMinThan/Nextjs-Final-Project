@@ -1,4 +1,5 @@
 import mongoose, { Mongoose } from "mongoose";
+import "@/database/index";
 declare global {
   // eslint-disable-next-line no-var
   var mongoose: {

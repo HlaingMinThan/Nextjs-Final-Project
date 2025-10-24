@@ -7,14 +7,18 @@ import { MdQuestionAnswer } from "react-icons/md";
 import profile from "@/public/profile.jpg";
 
 import TagCard from "./TagCard";
+import { IQuestionDoc } from "@/database/question.model";
 
-function ThreadCard() {
+function ThreadCard({ question }: { question: IQuestionDoc }) {
   return (
-    <div className="space-y-7 rounded-xl bg-card px-10 py-5">
-      <h1 className="text-xl font-bold">What is vue js ? how does it work ?</h1>
+    <div className="space-y-7 rounded-xl bg-card px-10 py-5 my-3">
+      <h1 className="text-xl font-bold">{question.title}</h1>
       <div className="space-x-3">
-        <TagCard href="/filters/vue">Vue</TagCard>
-        <TagCard href="/filters/react">React</TagCard>
+        {question.tags?.map((tag, i) => (
+          <TagCard href={`/filters/${tag?.name}`} key={i}>
+            {tag.name}
+          </TagCard>
+        ))}
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3 text-[14px] text-gray-300">
@@ -25,26 +29,26 @@ function ThreadCard() {
             className="aspect-square rounded-full object-cover"
             alt="logo"
           />
-          <span>Hlaing Min Than . asked 3 minutes ago</span>
+          <span>{question.author?.name} . asked 3 minutes ago</span>
         </div>
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-1 text-[14px] text-gray-300">
             <span>
               <AiFillLike />
             </span>
-            <span>1.2k Likes</span>
+            <span>{question.upvotes} Likes</span>
           </div>
           <div className="flex items-center space-x-1 text-[14px] text-gray-300">
             <span>
               <MdQuestionAnswer />
             </span>
-            <span>1.2k Answers</span>
+            <span>{question.answers} Answers</span>
           </div>
           <div className="flex items-center space-x-1 text-[14px] text-gray-300">
             <span>
               <IoMdEye />
             </span>
-            <span>1.2k Views</span>
+            <span>{question.views} Views</span>
           </div>
         </div>
       </div>

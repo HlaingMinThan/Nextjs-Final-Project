@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import ButtonLink from "@/components/ButtonLink";
 import Filters from "@/components/Filters";
 import ThreadCard from "@/components/ThreadCard";
+import { getQuestions } from "@/lib/actions/GetQuestions.action";
 import { api } from "@/lib/api";
 import fetchHandler from "@/lib/fetchHandler";
 import ROUTES from "@/routes";
@@ -10,13 +11,21 @@ async function page({
   searchParams,
 }: {
   searchParams: Promise<{
-    search: string | undefined;
-    filter: string | undefined;
+    [key: string]: string;
   }>;
 }) {
   const session = await auth();
-  const { search, filter } = await searchParams;
-  console.log(session);
+  const { page, pageSize, search, filter } = await searchParams;
+
+  const { success, data, message } = await getQuestions({
+    page: Number(page) || 1,
+    pageSize: Number(page) || 10,
+    search: search || "",
+    filter: filter || "",
+  });
+
+  const { questions } = data || {};
+
   return (
     <>
       <div className="flex items-center justify-between p-5">
@@ -30,7 +39,15 @@ async function page({
         </div>
       </div>
       <Filters />
-      <ThreadCard />
+      {success && data ? (
+        questions?.length ? (
+          questions?.map((question) => <ThreadCard question={question} />)
+        ) : (
+          <p>No Results Found</p>
+        )
+      ) : (
+        <p>{message}</p>
+      )}
     </>
   );
 }

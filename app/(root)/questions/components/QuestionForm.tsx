@@ -23,7 +23,7 @@ function QuestionForm({
   const [title, setTitle] = useState(question?.title ?? "");
   const [content, setContent] = useState(question?.content ?? "");
   const [tags, setTags] = useState<string[]>(
-    question?.tags.map((tag) => tag.name)
+    question?.tags.map((tag) => tag.name) ?? []
   );
   const [error, setError] = useState("");
   const [newTag, setNewTag] = useState("");
@@ -133,7 +133,7 @@ function QuestionForm({
       />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="mt-5 space-x-3 flex">
-        {tags.map((tag, i) => (
+        {tags?.map((tag, i) => (
           <RemovableTagCard key={tag} onRemove={() => removeTag(tag)}>
             {tag}
           </RemovableTagCard>
