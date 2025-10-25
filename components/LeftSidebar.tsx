@@ -23,7 +23,7 @@ async function LeftSidebar() {
         </li>
         <li className="rounded-xl bg-primary p-3">
           <Link
-            href={ROUTES.QUESTIONS}
+            href={ROUTES.TAGS}
             className="flex items-center space-x-4 text-[16px] font-bold"
           >
             <FaHome />
