@@ -42,7 +42,7 @@ async function page({
       <Filters />
       <DataRenderer
         success={success}
-        data={[]}
+        data={questions}
         errorMessage={message}
         render={(questions) =>
           questions.map((question) => <ThreadCard question={question} />)
