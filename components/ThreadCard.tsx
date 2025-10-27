@@ -8,11 +8,18 @@ import profile from "@/public/profile.jpg";
 
 import TagCard from "./TagCard";
 import { IQuestionDoc } from "@/database/question.model";
+import Link from "next/link";
+import ROUTES from "@/routes";
 
 function ThreadCard({ question }: { question: IQuestionDoc }) {
   return (
     <div className="space-y-7 rounded-xl bg-card px-10 py-5 my-3">
-      <h1 className="text-xl font-bold">{question.title}</h1>
+      <Link
+        href={ROUTES.QUESTION_DETAILS(question._id)}
+        className="hover:text-main"
+      >
+        <h1 className="text-xl font-bold">{question.title}</h1>
+      </Link>
       <div className="space-x-3">
         {question.tags?.map((tag, i) => (
           <TagCard href={`/filters/${tag?.name}`} key={i}>
