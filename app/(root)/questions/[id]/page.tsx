@@ -4,15 +4,21 @@ import { GetQuestion } from "@/lib/actions/GetQuestion.action";
 import { incrementViews } from "@/lib/actions/incrementViews.action";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
+import AnswerForm from "../components/AnswerForm";
 
-export default async function page({ params }: { params: { id: string } }) {
+export default async function page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
   let { data: question, success } = await GetQuestion({
-    questionId: params.id,
+    questionId: id,
   });
 
   after(async () => {
     await incrementViews({
-      questionId: params.id,
+      questionId: id,
     });
   });
 
@@ -117,6 +123,9 @@ export default async function page({ params }: { params: { id: string } }) {
         {question.tags.map((tag) => (
           <TagCard href={`/tags/${tag._id}`}> {tag.name}</TagCard>
         ))}
+      </div>
+      <div className="my-3">
+        <AnswerForm questionId={id} />
       </div>
     </div>
   );

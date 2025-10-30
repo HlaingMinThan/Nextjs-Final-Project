@@ -1,3 +1,5 @@
+"use server";
+
 import validateBody from "@/lib/validateBody";
 import IncrementViewSchema from "../schemas/IncrementViewSchema";
 import { actionError } from "../response";
