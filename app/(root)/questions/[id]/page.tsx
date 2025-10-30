@@ -5,6 +5,8 @@ import { incrementViews } from "@/lib/actions/incrementViews.action";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
 import AnswerForm from "../components/AnswerForm";
+import GetAnswers from "@/lib/actions/GetAnswers";
+import AnswerList from "../components/AnswerList";
 
 export default async function page({
   params,
@@ -12,7 +14,7 @@ export default async function page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  let { data: question, success } = await GetQuestion({
+  let { data: question } = await GetQuestion({
     questionId: id,
   });
 
@@ -21,6 +23,19 @@ export default async function page({
       questionId: id,
     });
   });
+
+  const {
+    success,
+    data: answersData,
+    message: answerError,
+  } = await GetAnswers({
+    page: 1,
+    pageSize: 10,
+    filter: "latest",
+    questionId: id,
+  });
+
+  const { answers = [], totalAnswers = 0 } = answersData || {};
 
   // const question = {
   //   id: "q123",
@@ -123,6 +138,14 @@ export default async function page({
         {question.tags.map((tag) => (
           <TagCard href={`/tags/${tag._id}`}> {tag.name}</TagCard>
         ))}
+      </div>
+      <div className="my-3">
+        <AnswerList
+          answers={answers}
+          totalAnswers={totalAnswers}
+          success={success}
+          errorMessage={answerError}
+        />
       </div>
       <div className="my-3">
         <AnswerForm questionId={id} />
