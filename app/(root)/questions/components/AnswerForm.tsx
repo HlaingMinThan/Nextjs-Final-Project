@@ -55,7 +55,10 @@ function AnswerForm({ questionId }: { questionId: string }) {
         <Editor
           label="Any Question ?"
           value={content}
-          onChange={(v) => setContent(v)}
+          onChange={(v) => {
+            console.log(v);
+            setContent(v);
+          }}
         />
       </div>
       <div className="flex justify-end">

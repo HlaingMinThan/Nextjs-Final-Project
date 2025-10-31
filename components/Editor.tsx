@@ -1,5 +1,6 @@
 "use client";
 
+import { Markdown } from "tiptap-markdown";
 import Bold from "@tiptap/extension-bold";
 import BulletList from "@tiptap/extension-bullet-list";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
@@ -15,7 +16,7 @@ import js from "highlight.js/lib/languages/javascript";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 import { all, createLowlight } from "lowlight";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { FaCode, FaItalic, FaLink, FaListOl, FaListUl } from "react-icons/fa";
 import "highlight.js/styles/github-dark.css";
 
@@ -125,12 +126,32 @@ const Editor = ({
       CodeBlockLowlight.configure({
         lowlight,
       }),
+      Markdown.configure({
+        html: false,
+      }),
     ],
-    content: value,
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      const md = editor?.storage?.markdown?.getMarkdown();
+      if (md !== value) {
+        onChange(md);
+      }
     },
   });
+
+  useEffect(() => {
+    if (!editor) return;
+    if (typeof value !== "string") return;
+
+    try {
+      const md = editor?.storage?.markdown?.getMarkdown();
+
+      if (md !== value) {
+        editor.commands.setContent(value);
+      }
+    } catch (e) {
+      editor.commands.clearContent();
+    }
+  }, [value, editor]);
 
   const setLink = useCallback(() => {
     const previousUrl = editor?.getAttributes("link").href;
