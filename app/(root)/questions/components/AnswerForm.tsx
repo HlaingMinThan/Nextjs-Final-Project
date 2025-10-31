@@ -5,13 +5,12 @@ import Editor from "@/components/Editor";
 import AnswerCreate from "@/lib/actions/AnswerCreate";
 import ROUTES from "@/routes";
 import { useRouter } from "next/navigation";
-import router from "next/router";
 import React, { useState } from "react";
 import { Bounce, toast } from "react-toastify";
 
 function AnswerForm({ questionId }: { questionId: string }) {
   const [content, setContent] = useState("");
-  let router = useRouter();
+  const router = useRouter();
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -19,6 +18,7 @@ function AnswerForm({ questionId }: { questionId: string }) {
         questionId,
         content,
       });
+      setContent("");
       if (success && data) {
         toast.success("Answer submitted successfully.", {
           position: "bottom-right",

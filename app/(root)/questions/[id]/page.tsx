@@ -136,7 +136,10 @@ export default async function page({
       </div>
       <div className="mt-8 flex flex-wrap gap-2">
         {question.tags.map((tag) => (
-          <TagCard href={`/tags/${tag._id}`}> {tag.name}</TagCard>
+          <TagCard href={`/tags/${tag._id}`} key={tag._id.toString()}>
+            {" "}
+            {tag.name}
+          </TagCard>
         ))}
       </div>
       <div className="my-3">

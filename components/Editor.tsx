@@ -168,18 +168,21 @@ const Editor = ({
       {label && <label className="font-semibold">{label}</label>}
       <div className="mt-3 flex space-x-3 rounded-lg bg-primary p-2">
         <button
+          type="button"
           onClick={() => editor?.chain().focus().toggleBold().run()}
           className={editor?.isActive("bold") ? "text-main" : ""}
         >
           B
         </button>
         <button
+          type="button"
           onClick={() => editor?.chain().focus().toggleItalic().run()}
           className={editor?.isActive("italic") ? "text-main" : ""}
         >
           <FaItalic />
         </button>
         <button
+          type="button"
           onClick={() =>
             editor?.chain().focus().toggleHeading({ level: 1 }).run()
           }
@@ -190,6 +193,7 @@ const Editor = ({
           H1
         </button>
         <button
+          type="button"
           onClick={() =>
             editor?.chain().focus().toggleHeading({ level: 2 }).run()
           }
@@ -200,6 +204,7 @@ const Editor = ({
           H2
         </button>
         <button
+          type="button"
           onClick={() =>
             editor?.chain().focus().toggleHeading({ level: 3 }).run()
           }
@@ -210,24 +215,28 @@ const Editor = ({
           H3
         </button>
         <button
+          type="button"
           onClick={setLink}
           className={editor?.isActive("link") ? "text-main" : ""}
         >
           <FaLink />
         </button>
         <button
+          type="button"
           onClick={() => editor?.chain().focus().toggleBulletList().run()}
           className={editor?.isActive("bulletList") ? "text-main" : ""}
         >
           <FaListUl />
         </button>
         <button
+          type="button"
           onClick={() => editor?.chain().focus().toggleOrderedList().run()}
           className={editor?.isActive("orderedList") ? "text-main" : ""}
         >
           <FaListOl />
         </button>
         <button
+          type="button"
           onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
           className={editor?.isActive("codeBlock") ? "text-main" : ""}
         >
