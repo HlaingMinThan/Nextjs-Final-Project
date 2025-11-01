@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.26",
+    "@ai-sdk/react": "^2.0.86",
     "@tailwindcss/typography": "^0.5.16",
     "@tiptap/extension-bold": "^2.11.5",
     "@tiptap/extension-bullet-list": "^2.11.5",
@@ -21,6 +23,7 @@
     "@tiptap/pm": "^2.11.5",
     "@tiptap/react": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
+    "ai": "^5.0.86",
     "bcryptjs": "^3.0.2",
     "bright": "^1.0.0",
     "highlight.js": "^11.11.1",
@@ -37,7 +40,7 @@
     "slugify": "^1.6.6",
     "tiptap-markdown": "^0.9.0",
     "use-debounce": "^10.0.4",
-    "zod": "^3.24.2"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
