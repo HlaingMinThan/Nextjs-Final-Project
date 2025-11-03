@@ -7,6 +7,7 @@ import { after } from "next/server";
 import AnswerForm from "../components/AnswerForm";
 import GetAnswers from "@/lib/actions/GetAnswers";
 import AnswerList from "../components/AnswerList";
+import VoteButtons from "@/components/VoteButtons";
 
 export default async function page({
   params,
@@ -124,9 +125,13 @@ export default async function page({
     <div className="p-3">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{question.title}</h1>
-        <div className="flex justify-center gap-3 text-xs text-gray-200">
-          <div>{question.upvotes} Likes</div>
-          <div>{question.downvotes} Dislikes</div>
+        <div className="flex justify-center items-center gap-3 text-xs text-gray-200">
+          <VoteButtons
+            type="question"
+            typeId={id.toString()}
+            initialUpvotes={question.upvotes}
+            initialDownvotes={question.downvotes}
+          />
           <div>{question.answers} Answers</div>
           <div>{question.views} Views</div>
         </div>
