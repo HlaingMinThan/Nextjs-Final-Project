@@ -1,6 +1,8 @@
 "use client";
 
+import VoteAction from "@/lib/actions/VoteAction";
 import React, { useState } from "react";
+import { Bounce, toast } from "react-toastify";
 
 function VoteButtons({
   typeId,
@@ -16,10 +18,34 @@ function VoteButtons({
   let [upvotes, setUpvotes] = useState(initialUpvotes);
   let [downvotes, setDownvotes] = useState(initialDownvotes);
   let [userVote, setUserVote] = useState<"upvote" | "downvote" | null>(null);
-  let handleVote = (voteType: "upvote" | "downvote") => {
-    setUpvotes(100);
-    setDownvotes(100);
-    setUserVote(voteType);
+  let handleVote = async (voteType: "upvote" | "downvote") => {
+    try {
+      let { success, data, message } = await VoteAction({
+        type,
+        typeId,
+        voteType,
+      });
+      if (success) {
+        let { upvotes = 0, downvotes = 0, userVote } = data || {};
+        setUpvotes(upvotes);
+        setDownvotes(downvotes);
+        setUserVote(userVote ?? null);
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        toast.error(e.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+      }
+    }
   };
   return (
     <div className="flex items-center space-x-2 text-xs">
