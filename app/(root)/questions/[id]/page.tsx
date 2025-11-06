@@ -8,6 +8,7 @@ import AnswerForm from "../components/AnswerForm";
 import GetAnswers from "@/lib/actions/GetAnswers";
 import AnswerList from "../components/AnswerList";
 import VoteButtons from "@/components/VoteButtons";
+import ToggleBookmark from "../components/ToggleBookmark";
 
 export default async function page({
   params,
@@ -134,6 +135,9 @@ export default async function page({
           />
           <div>{question.answers} Answers</div>
           <div>{question.views} Views</div>
+          <div>
+            <ToggleBookmark />
+          </div>
         </div>
       </div>
       <div className="my-3">
