@@ -41,11 +41,11 @@ async function LeftSidebar() {
         </li>
         <li className="rounded-xl bg-primary p-3">
           <Link
-            href={ROUTES.QUESTIONS}
+            href={ROUTES.BOOKMARKS}
             className="flex items-center space-x-4 text-[16px] font-bold"
           >
             <FaHome />
-            <span>Ask a new question</span>
+            <span>Bookmarks</span>
           </Link>
         </li>
         <li className="rounded-xl bg-primary p-3">
