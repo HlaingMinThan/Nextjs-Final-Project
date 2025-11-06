@@ -136,7 +136,7 @@ export default async function page({
           <div>{question.answers} Answers</div>
           <div>{question.views} Views</div>
           <div>
-            <ToggleBookmark />
+            <ToggleBookmark questionId={id} saved={question?.saved} />
           </div>
         </div>
       </div>
