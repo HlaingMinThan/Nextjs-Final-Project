@@ -12,10 +12,15 @@ import ToggleBookmark from "../components/ToggleBookmark";
 
 export default async function page({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{
+    [key: string]: string;
+  }>;
 }) {
   const { id } = await params;
+  const { page = 1, pageSize = 10, filter = "" } = await searchParams;
   let { data: question } = await GetQuestion({
     questionId: id,
   });
@@ -31,9 +36,9 @@ export default async function page({
     data: answersData,
     message: answerError,
   } = await GetAnswers({
-    page: 1,
-    pageSize: 10,
-    filter: "latest",
+    page: Number(page),
+    pageSize: Number(pageSize),
+    filter: filter,
     questionId: id,
   });
 

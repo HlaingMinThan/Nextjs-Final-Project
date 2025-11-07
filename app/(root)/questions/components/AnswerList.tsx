@@ -2,6 +2,8 @@ import DataRenderer from "@/components/DataRenderer";
 import { IAnswer } from "@/database/answer.model";
 import React from "react";
 import AnswerCard from "./AnswerCard";
+import CommonFilter from "@/components/CommonFilter";
+import { AnswerFilters, DefaultFilters } from "@/constant/filters";
 
 function AnswerList({
   answers,
@@ -16,7 +18,15 @@ function AnswerList({
 }) {
   return (
     <div className="mt-8">
-      <h3 className="font-bold text-xl">AnswerList - {totalAnswers}</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="font-bold text-xl">AnswerList - {totalAnswers}</h3>
+        <div>
+          <CommonFilter
+            filters={AnswerFilters}
+            defaultFilter={DefaultFilters.AnswerFilters}
+          />
+        </div>
+      </div>
       <DataRenderer
         success={success}
         errorMessage={errorMessage}
