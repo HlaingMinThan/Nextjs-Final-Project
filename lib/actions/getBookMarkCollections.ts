@@ -1,13 +1,12 @@
 "use server";
 
+import mongoose, { PipelineStage } from "mongoose";
 import { ICollection } from "@/database/collection.model";
 import Collection from "@/database/collection.model";
-import Question, { IQuestionDoc } from "@/database/question.model";
 import dbConnect from "../dbConnect";
 import { auth } from "@/auth";
 import validateBody from "../validateBody";
 import PaginatedSearchParamsSchema from "../schemas/PaginatedSearchParamsSchema";
-import { FilterQuery } from "mongoose";
 import { actionError } from "../response";
 
 const getBookMarkCollections = async (params: {
@@ -29,66 +28,100 @@ const getBookMarkCollections = async (params: {
   const auth_session = await auth();
   const userId = auth_session?.user?.id;
 
+  if (!userId) {
+    return {
+      success: true,
+      data: { collections: [], isNext: false },
+    };
+  }
+
   const validatedData = validateBody(params, PaginatedSearchParamsSchema);
 
-  let { page = 1, pageSize = 10, search, filter, sort } = validatedData.data;
+  let { page = 1, pageSize = 10, search, filter } = validatedData.data;
 
   const skip = (Number(page) - 1) * pageSize;
   const limit = Number(pageSize);
 
-  const filterQuery: FilterQuery<typeof Collection> = { author: userId };
-  if (search) {
-    const matchingQuestions = await Question.find({
-      $or: [
-        { title: { $regex: search, $options: "i" } },
-        { content: { $regex: search, $options: "i" } },
-      ],
-    }).select("_id"); // [{_id:adfasd},{_id:adfasd}]
-    const matchingIds = matchingQuestions.map((q) => q._id); //['adfasd,'adafsdf']
-    if (!matchingIds.length) {
-      return {
-        success: true,
-        data: { collections: [], isNext: false },
-      };
-    }
-    filterQuery.question = { $in: matchingIds };
-  }
+  // Define sort options for all filters
+  const sortOptions: Record<string, Record<string, 1 | -1>> = {
+    mostrecent: { "question.createdAt": -1 },
+    oldest: { "question.createdAt": 1 },
+    mostvoted: { "question.upvotes": -1 },
+    mostviewed: { "question.views": -1 },
+    mostanswered: { "question.answers": -1 },
+  };
 
-  let sortCriteria = {};
-  switch (filter) {
-    case "mostrecent":
-      sortCriteria = { createdAt: -1 };
-      break;
-    case "oldest":
-      sortCriteria = { createdAt: -1 };
-      break;
-    case "mostvoted":
-      sortCriteria = { upvotes: -1 };
-      break;
-    case "mostanswered":
-      sortCriteria = { answers: -1 };
-      break;
-    default:
-      sortCriteria = { createdAt: -1 };
-      break;
-  }
+  const sortCriteria = sortOptions[filter] || sortOptions.mostrecent;
 
   try {
-    const totalCollections = await Collection.countDocuments(filterQuery);
+    // Build aggregation pipeline
+    const pipeline: PipelineStage[] = [
+      // Match collections for the current user
+      {
+        $match: { author: new mongoose.Types.ObjectId(userId) },
+      },
+      // Lookup questions
+      {
+        $lookup: {
+          from: "questions",
+          localField: "question",
+          foreignField: "_id",
+          as: "question",
+        },
+      },
+      // Unwind question
+      { $unwind: "$question" },
+      // Lookup author
+      {
+        $lookup: {
+          from: "users",
+          localField: "question.author",
+          foreignField: "_id",
+          as: "question.author",
+        },
+      },
+      // Unwind author
+      { $unwind: "$question.author" },
+      // Lookup tags
+      {
+        $lookup: {
+          from: "tags",
+          localField: "question.tags",
+          foreignField: "_id",
+          as: "question.tags",
+        },
+      },
+    ];
 
-    const collections = await Collection.find(filterQuery)
-      .populate({
-        path: "question",
-        populate: [
-          { path: "tags", select: "_id name" },
-          { path: "author", select: "_id name image" },
-        ],
-      })
-      .sort(sortCriteria)
-      .skip(skip)
-      .limit(limit);
+    // Apply search filter if provided
+    if (search) {
+      pipeline.push({
+        $match: {
+          $or: [
+            { "question.title": { $regex: search, $options: "i" } },
+            { "question.content": { $regex: search, $options: "i" } },
+          ],
+        },
+      });
+    }
 
-    const isNext = totalCollections > skip + collections.length;
+    // Get total count before pagination
+    const [totalCountResult] = await Collection.aggregate([
+      ...pipeline,
+      { $count: "count" },
+    ]);
+
+    const totalCount = totalCountResult?.count || 0;
+
+    // Add sorting and pagination &  Execute aggregation
+    const collections = await Collection.aggregate([
+      ...pipeline,
+      { $sort: sortCriteria },
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    const isNext = totalCount > skip + collections.length;
 
     return {
       success: true,
