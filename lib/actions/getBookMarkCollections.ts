@@ -52,15 +52,24 @@ const getBookMarkCollections = async (params: {
   };
 
   const sortCriteria = sortOptions[filter] || sortOptions.mostrecent;
-
+  /* collection -> {
+    _id : "asdfsafsdf",
+    question : { 
+    _id : "adfasdf", 
+    title: "adfasdfs", 
+    content: "adfasdfs", 
+    author:{_id:"asdfsaf"},
+    tags:[]
+    ]
+   } */
   try {
-    // Build aggregation pipeline
+    // Build aggregation pipeline - collection
     const pipeline: PipelineStage[] = [
       // Match collections for the current user
       {
         $match: { author: new mongoose.Types.ObjectId(userId) },
       },
-      // Lookup questions
+      // Lookup questions -> join -> collection -> question
       {
         $lookup: {
           from: "questions",
@@ -109,9 +118,9 @@ const getBookMarkCollections = async (params: {
     const [totalCountResult] = await Collection.aggregate([
       ...pipeline,
       { $count: "count" },
-    ]);
+    ]); // [{count : 10}]
 
-    const totalCount = totalCountResult?.count || 0;
+    const totalCollections = totalCountResult?.count || 0;
 
     // Add sorting and pagination &  Execute aggregation
     const collections = await Collection.aggregate([
@@ -119,9 +128,9 @@ const getBookMarkCollections = async (params: {
       { $sort: sortCriteria },
       { $skip: skip },
       { $limit: limit },
-    ]);
+    ]); // []
 
-    const isNext = totalCount > skip + collections.length;
+    const isNext = totalCollections > skip + collections.length;
 
     return {
       success: true,
