@@ -1,8 +1,10 @@
 import { auth } from "@/auth";
 import ButtonLink from "@/components/ButtonLink";
+import CommonFilter from "@/components/CommonFilter";
 import DataRenderer from "@/components/DataRenderer";
 import Filters from "@/components/Filters";
 import ThreadCard from "@/components/ThreadCard";
+import { DefaultFilters, HomePageFilters } from "@/constant/filters";
 import { getQuestions } from "@/lib/actions/GetQuestions.action";
 import { api } from "@/lib/api";
 import fetchHandler from "@/lib/fetchHandler";
@@ -32,6 +34,12 @@ async function page({
       <div className="flex items-center justify-between p-5">
         <div>
           <h1 className="text-3xl font-bold">All Threads</h1>
+        </div>
+        <div>
+          <CommonFilter
+            filters={HomePageFilters}
+            defaultFilter={DefaultFilters.HomePageFilters}
+          />
         </div>
         <div>
           <ButtonLink href={ROUTES.QUESTION_CREATE}>
