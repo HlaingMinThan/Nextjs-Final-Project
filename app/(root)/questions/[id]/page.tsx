@@ -1,5 +1,6 @@
 import Preview from "@/components/Preview";
 import TagCard from "@/components/TagCard";
+import Pagination from "@/components/Pagination";
 import { GetQuestion } from "@/lib/actions/GetQuestion.action";
 import { incrementViews } from "@/lib/actions/incrementViews.action";
 import { notFound } from "next/navigation";
@@ -9,6 +10,7 @@ import GetAnswers from "@/lib/actions/GetAnswers";
 import AnswerList from "../components/AnswerList";
 import VoteButtons from "@/components/VoteButtons";
 import ToggleBookmark from "../components/ToggleBookmark";
+import { DefaultFilters } from "@/constant/filters";
 
 export default async function page({
   params,
@@ -38,11 +40,11 @@ export default async function page({
   } = await GetAnswers({
     page: Number(page),
     pageSize: Number(pageSize),
-    filter: filter,
+    filter: filter || DefaultFilters.AnswerFilters,
     questionId: id,
   });
 
-  const { answers = [], totalAnswers = 0 } = answersData || {};
+  const { answers = [], totalAnswers = 0, isNext = false } = answersData || {};
 
   // const question = {
   //   id: "q123",
@@ -163,6 +165,7 @@ export default async function page({
           success={success}
           errorMessage={answerError}
         />
+        <Pagination isNext={isNext} page={page || 1} />
       </div>
       <div className="my-3">
         <AnswerForm

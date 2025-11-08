@@ -3,6 +3,7 @@ import ButtonLink from "@/components/ButtonLink";
 import CommonFilter from "@/components/CommonFilter";
 import DataRenderer from "@/components/DataRenderer";
 import Filters from "@/components/Filters";
+import Pagination from "@/components/Pagination";
 import ThreadCard from "@/components/ThreadCard";
 import { DefaultFilters, HomePageFilters } from "@/constant/filters";
 import { getQuestions } from "@/lib/actions/GetQuestions.action";
@@ -18,7 +19,7 @@ async function page({
   }>;
 }) {
   const session = await auth();
-  const { page, pageSize, search, filter } = await searchParams;
+  const { page = 1, pageSize = 10, search, filter } = await searchParams;
 
   const { success, data, message } = await getQuestions({
     page: Number(page) || 1,
@@ -27,7 +28,7 @@ async function page({
     filter: filter || "",
   });
 
-  const { questions = [] } = data || {};
+  const { questions = [], isNext = false } = data || {};
 
   return (
     <>
@@ -58,6 +59,7 @@ async function page({
           ))
         }
       />
+      <Pagination isNext={isNext} page={page} />
     </>
   );
 }

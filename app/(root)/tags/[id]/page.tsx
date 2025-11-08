@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import ButtonLink from "@/components/ButtonLink";
 import DataRenderer from "@/components/DataRenderer";
 import Filters from "@/components/Filters";
+import Pagination from "@/components/Pagination";
 import ThreadCard from "@/components/ThreadCard";
 import { getQuestions } from "@/lib/actions/GetQuestions.action";
 import getTagQuestions from "@/lib/actions/GetTagQuestions";
@@ -28,7 +29,7 @@ async function page({
     tagId: id,
   });
 
-  const { questions = [], tag } = data || {};
+  const { questions = [], tag, isNext = false } = data || {};
 
   return (
     <>
@@ -47,6 +48,7 @@ async function page({
           ))
         }
       />
+      <Pagination isNext={isNext} page={page || 1} />
     </>
   );
 }

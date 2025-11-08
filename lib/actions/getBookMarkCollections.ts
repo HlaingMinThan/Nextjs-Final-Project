@@ -18,9 +18,9 @@ const getBookMarkCollections = async (params: {
 }): Promise<{
   data?: {
     collections: ICollection[];
-    isNext: Boolean;
+    isNext: boolean;
   };
-  success: Boolean;
+  success: boolean;
   message?: string;
   details?: object | null;
 }> => {

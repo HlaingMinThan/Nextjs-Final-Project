@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import DataRenderer from "@/components/DataRenderer";
+import Pagination from "@/components/Pagination";
 import GetUsers from "@/lib/actions/GetUsers";
 import UserCard from "./component/UserCard";
 import { DefaultFilters, UserFilters } from "@/constant/filters";
@@ -22,7 +23,7 @@ async function page({
     filter: filter || "",
   });
 
-  const { users = [] } = data || {};
+  const { users = [], isNext = false } = data || {};
 
   return (
     <>
@@ -56,6 +57,7 @@ async function page({
           );
         }}
       />
+      <Pagination isNext={isNext} page={page || 1} />
     </>
   );
 }

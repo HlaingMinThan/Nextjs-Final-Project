@@ -1,6 +1,7 @@
 import CommonFilter from "@/components/CommonFilter";
 import DataRenderer from "@/components/DataRenderer";
 import Filters from "@/components/Filters";
+import Pagination from "@/components/Pagination";
 import ThreadCard from "@/components/ThreadCard";
 import {
   UserFilters,
@@ -25,7 +26,7 @@ async function page({
     filter: filter || "",
   });
 
-  const { collections = [] } = data || {};
+  const { collections = [], isNext = false } = data || {};
 
   return (
     <>
@@ -51,6 +52,7 @@ async function page({
           ))
         }
       />
+      <Pagination isNext={isNext} page={page || 1} />
     </>
   );
 }

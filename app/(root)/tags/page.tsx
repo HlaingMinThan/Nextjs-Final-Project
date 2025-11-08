@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import CommonFilter from "@/components/CommonFilter";
 import DataRenderer from "@/components/DataRenderer";
+import Pagination from "@/components/Pagination";
 import TagInfoCard from "@/components/TagInfoCard";
 import {
   HomePageFilters,
@@ -26,7 +27,7 @@ async function page({
     filter: filter || "",
   });
 
-  const { tags = [] } = data || {};
+  const { tags = [], isNext = false } = data || {};
 
   return (
     <>
@@ -60,6 +61,7 @@ async function page({
           );
         }}
       />
+      <Pagination isNext={isNext} page={page || 1} />
     </>
   );
 }

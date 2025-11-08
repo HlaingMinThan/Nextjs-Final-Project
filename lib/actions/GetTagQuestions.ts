@@ -15,11 +15,11 @@ const getTagQuestions = async (params: {
   sort?: string;
   tagId: string;
 }): Promise<{
-  success: Boolean;
+  success: boolean;
   data?: {
     tag: ITagDoc;
     questions: IQuestionDoc[];
-    isNext: Boolean;
+    isNext: boolean;
   };
   message?: string;
   details?: object | null;

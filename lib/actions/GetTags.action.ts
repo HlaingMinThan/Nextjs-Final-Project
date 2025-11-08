@@ -16,9 +16,9 @@ export async function getTags(params: {
 }): Promise<{
   data?: {
     tags: ITagDoc[];
-    isNext: Boolean;
+    isNext: boolean;
   };
-  success: Boolean;
+  success: boolean;
   message?: string;
   details?: object | null;
 }> {
