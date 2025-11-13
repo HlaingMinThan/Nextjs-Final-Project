@@ -6,6 +6,8 @@ import SearchInput from "./SearchInput";
 import logo from "../public/logo.jpg";
 
 import { auth } from "@/auth";
+import Link from "next/link";
+import ROUTES from "@/routes";
 
 async function Navbar() {
   let session = await auth();
@@ -30,13 +32,15 @@ async function Navbar() {
       </div>
       <div>
         {user && (
-          <Image
-            src={user?.image}
-            width={45}
-            height={45}
-            className="aspect-square rounded-full object-cover"
-            alt="logo"
-          />
+          <Link href={ROUTES.PROFILE(user.id as string)}>
+            <Image
+              src={user?.image as string}
+              width={45}
+              height={45}
+              className="aspect-square rounded-full object-cover"
+              alt="logo"
+            />
+          </Link>
         )}
       </div>
     </nav>
