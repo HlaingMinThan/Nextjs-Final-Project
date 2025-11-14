@@ -7,6 +7,7 @@ import ThreadCard from "@/components/ThreadCard";
 import getUserAnswers from "@/lib/actions/GetUserAnswers";
 import AnswerCard from "../../questions/components/AnswerCard";
 import Link from "next/link";
+import { success } from "zod/v4";
 
 const Page = async ({
   params,
@@ -17,7 +18,7 @@ const Page = async ({
 }) => {
   const { id } = params;
   const result = await GetUser({ userId: id });
-  const activeTab = searchParams.tab;
+  const activeTab = searchParams.tab || "questions";
 
   if (!result.success || !result.data) {
     return (
@@ -28,19 +29,27 @@ const Page = async ({
   }
 
   const { user, totalQuestions, totalAnswers } = result.data;
-  let { success, data, message } = await getUserQuestions({
-    userId: id,
-  });
-  const { questions = [] } = data || {};
 
-  let {
-    success: answerSuccess,
-    data: dataAnswer,
-    message: answerError,
-  } = await getUserAnswers({
-    userId: id,
-  });
-  const { answers = [] } = dataAnswer || {};
+  let isSuccess;
+  let dataForLoop;
+  let errorMessage;
+  if (activeTab === "questions") {
+    let { success, data, message } = await getUserQuestions({
+      userId: id,
+    });
+    const { questions = [] } = data || {};
+    isSuccess = success;
+    dataForLoop = questions;
+    errorMessage = message;
+  } else {
+    let { success, data, message } = await getUserAnswers({
+      userId: id,
+    });
+    const { answers = [] } = data || {};
+    isSuccess = success;
+    dataForLoop = answers;
+    errorMessage = message;
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -66,9 +75,9 @@ const Page = async ({
       </div>
       {activeTab === "questions" ? (
         <DataRenderer
-          success={success}
-          data={questions}
-          errorMessage={message}
+          success={isSuccess}
+          data={dataForLoop}
+          errorMessage={errorMessage}
           render={(questions) =>
             questions.map((question) => (
               <ThreadCard key={question._id} question={question} />
@@ -77,9 +86,9 @@ const Page = async ({
         />
       ) : (
         <DataRenderer
-          success={answerSuccess}
-          data={answers}
-          errorMessage={answerError}
+          success={isSuccess}
+          data={dataForLoop}
+          errorMessage={errorMessage}
           render={(answers) =>
             answers.map((answer) => (
               <AnswerCard key={answer._id.toString()} answer={answer} />
