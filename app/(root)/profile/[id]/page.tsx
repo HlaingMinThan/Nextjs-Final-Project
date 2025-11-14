@@ -7,18 +7,20 @@ import ThreadCard from "@/components/ThreadCard";
 import getUserAnswers from "@/lib/actions/GetUserAnswers";
 import AnswerCard from "../../questions/components/AnswerCard";
 import Link from "next/link";
-import { success } from "zod/v4";
+import Pagination from "@/components/Pagination";
 
 const Page = async ({
   params,
   searchParams,
 }: {
   params: { id: string };
-  searchParams: { tab: string };
+  searchParams: { tab: string; page: string };
 }) => {
   const { id } = params;
   const result = await GetUser({ userId: id });
   const activeTab = searchParams.tab || "questions";
+  let page = searchParams.page || 1;
+  page = Number(page);
 
   if (!result.success || !result.data) {
     return (
@@ -33,22 +35,29 @@ const Page = async ({
   let isSuccess;
   let dataForLoop;
   let errorMessage;
+  let isNextValue;
   if (activeTab === "questions") {
     let { success, data, message } = await getUserQuestions({
       userId: id,
+      page,
+      pageSize: 10,
     });
-    const { questions = [] } = data || {};
+    const { questions = [], isNext = false } = data || {};
     isSuccess = success;
     dataForLoop = questions;
     errorMessage = message;
+    isNextValue = isNext;
   } else {
     let { success, data, message } = await getUserAnswers({
       userId: id,
+      page,
+      pageSize: 10,
     });
-    const { answers = [] } = data || {};
+    const { answers = [], isNext = false } = data || {};
     isSuccess = success;
     dataForLoop = answers;
     errorMessage = message;
+    isNextValue = isNext;
   }
 
   return (
@@ -74,27 +83,33 @@ const Page = async ({
         </Link>
       </div>
       {activeTab === "questions" ? (
-        <DataRenderer
-          success={isSuccess}
-          data={dataForLoop}
-          errorMessage={errorMessage}
-          render={(questions) =>
-            questions.map((question) => (
-              <ThreadCard key={question._id} question={question} />
-            ))
-          }
-        />
+        <>
+          <DataRenderer
+            success={isSuccess}
+            data={dataForLoop}
+            errorMessage={errorMessage}
+            render={(questions) =>
+              questions.map((question) => (
+                <ThreadCard key={question._id} question={question} />
+              ))
+            }
+          />
+          <Pagination isNext={isNextValue} page={page} />
+        </>
       ) : (
-        <DataRenderer
-          success={isSuccess}
-          data={dataForLoop}
-          errorMessage={errorMessage}
-          render={(answers) =>
-            answers.map((answer) => (
-              <AnswerCard key={answer._id.toString()} answer={answer} />
-            ))
-          }
-        />
+        <>
+          <DataRenderer
+            success={isSuccess}
+            data={dataForLoop}
+            errorMessage={errorMessage}
+            render={(answers) =>
+              answers.map((answer) => (
+                <AnswerCard key={answer._id.toString()} answer={answer} />
+              ))
+            }
+          />
+          <Pagination isNext={isNextValue} page={page} />
+        </>
       )}
     </div>
   );
