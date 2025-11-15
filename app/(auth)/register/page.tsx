@@ -1,15 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { redirect } from "next/navigation";
 
 import Button from "@/components/Button";
 
 import logo from "@/public/logo.jpg";
 import ROUTES from "@/routes";
+import { auth } from "@/auth";
 import AuthenticationForm from "../components/AuthenticationForm";
 import { signUpWithCredentials } from "@/lib/actions/SignUpWithCredentials.action";
 
-function page() {
+async function page() {
+  const session = await auth();
+
+  if (session) {
+    redirect(ROUTES.HOME);
+  }
   return (
     <div className="flex">
       <div className="flex h-screen w-2/4 items-center  bg-primary p-10">
@@ -26,7 +33,9 @@ function page() {
             illo molestias officiis dolorem. Vel, earum fugiat esse tempore
             reprehenderit saepe?
           </p>
-          <Button variant="outline">Login account ?</Button>
+          <Link href={ROUTES.LOGIN} className="block">
+            <Button variant="outline">Login account ?</Button>
+          </Link>
         </div>
       </div>
       <div className="flex h-screen w-2/4 items-center justify-center ">

@@ -1,17 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { redirect } from "next/navigation";
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import logo from "@/public/logo.jpg";
 import ROUTES from "@/routes";
+import { auth } from "@/auth";
 
 import AuthForm from "../components/AuthForm";
 import AuthenticationForm from "../components/AuthenticationForm";
 import { signInWithCredentials } from "@/lib/actions/SignInWithCredentials.action";
 
-function page() {
+async function page() {
+  const session = await auth();
+
+  if (session) {
+    redirect(ROUTES.HOME);
+  }
   return (
     <div className="flex">
       <div className="flex h-screen w-2/4 items-center  bg-primary p-10">
@@ -28,7 +35,9 @@ function page() {
             illo molestias officiis dolorem. Vel, earum fugiat esse tempore
             reprehenderit saepe?
           </p>
-          <Button variant="outline">Create a new account ?</Button>
+          <Link href={ROUTES.REGISTER} className="block">
+            <Button variant="outline">Create a new account ?</Button>
+          </Link>
         </div>
       </div>
       <div className="flex h-screen w-2/4 items-center justify-center ">
