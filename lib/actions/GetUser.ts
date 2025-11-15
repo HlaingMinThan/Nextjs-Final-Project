@@ -5,6 +5,7 @@ import GetUserParamsSchema from "../schemas/GetUserParamsSchema";
 import validateBody from "../validateBody";
 import Question from "@/database/question.model";
 import Answer from "@/database/answer.model";
+import { Types } from "mongoose";
 
 const GetUser = async (params: {
   userId: string;
@@ -23,6 +24,9 @@ const GetUser = async (params: {
   const { userId } = validatedData.data;
 
   try {
+    if (!Types.ObjectId.isValid(userId)) {
+      throw new Error("Invalid user id");
+    }
     const user = await User.findById(userId);
     if (!user) throw new Error("User Not Found");
 

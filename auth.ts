@@ -33,7 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           );
           if (isValidPassword) {
             return {
-              id: existingUser.id,
+              id: existingAccount.userId.toString(),
               name: existingUser.name,
               username: existingUser.username,
               email: existingUser.email,
@@ -65,8 +65,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       });
       return success;
     },
-    async jwt({ token, account }) {
+    async jwt({ token, account, user }) {
       if (account) {
+        // Handle OAuth providers
         const { success, data: accountData } = await api.accounts.getByProvider(
           account?.providerAccountId
         );
@@ -75,7 +76,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const userId = accountData?.userId;
 
-        if (userId) token.sub = userId;
+        if (userId) token.sub = userId.toString();
+      } else if (user?.id) {
+        // Handle credentials provider - user.id comes from authorize function
+        token.sub = user.id;
       }
       return token;
     },
