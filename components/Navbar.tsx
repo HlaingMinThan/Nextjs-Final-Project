@@ -40,6 +40,7 @@ async function Navbar() {
               className="block rounded-full ring-2 ring-transparent transition-all duration-200 group-hover:ring-main"
             >
               {hasProfileImage ? (
+                <image
                   src={user.image as string}
                   width={45}
                   height={45}
