@@ -68,7 +68,7 @@ async function Navbar() {
               )}
             </Link>
 
-            <div className="pointer-events-none absolute right-0 top-full z-10 mt-4 w-64 -translate-y-2 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-hover:pointer-events-auto">
+            <div className="absolute right-0 top-full z-10 mt-4 w-64 -translate-y-2 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
               <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-secondary via-primary to-tertiary p-4 text-white shadow-2xl">
                 <div className="mb-4 border-b border-white/10 pb-3">
                   <p className="text-xs uppercase tracking-wide text-white/60">
