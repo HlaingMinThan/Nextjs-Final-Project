@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono as GeistMono } from "next/font/google";
+import type { ReactNode } from "react";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -7,7 +8,7 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
+const geistMono = GeistMono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
@@ -20,14 +21,68 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
-        {children}
+        <div className="min-h-screen">
+          <header className="border-b border-black/5 bg-white/70 backdrop-blur">
+            <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+              <div className="text-lg font-semibold tracking-tight text-gray-900">
+                Nimbus Projects
+              </div>
+
+              <nav className="flex items-center gap-6 text-sm font-medium text-gray-600">
+                <a className="hover:text-gray-900" href="#projects">
+                  Projects
+                </a>
+                <a className="hover:text-gray-900" href="#teams">
+                  Teams
+                </a>
+                <a className="hover:text-gray-900" href="#reports">
+                  Reports
+                </a>
+
+                <div className="relative group">
+                  <div className="flex cursor-pointer items-center gap-3 rounded-full border border-gray-200 bg-white px-3 py-1.5 shadow-sm transition hover:border-gray-300">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500" />
+                    <div className="text-left">
+                      <p className="text-xs uppercase tracking-wide text-gray-400">
+                        Product Lead
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        Jamie Hart
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="absolute right-0 mt-3 w-56 rounded-xl border border-gray-100 bg-white p-3 text-sm text-gray-600 shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition duration-200">
+                    <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-gray-400">
+                      Quick actions
+                    </p>
+                    <button className="flex w-full items-center justify-between rounded-lg px-3 py-2 hover:bg-gray-50">
+                      View profile
+                      <span className="text-xs text-gray-400">↗</span>
+                    </button>
+                    <button className="flex w-full items-center justify-between rounded-lg px-3 py-2 hover:bg-gray-50">
+                      Account settings
+                      <span className="text-xs text-gray-400">⌘ ,</span>
+                    </button>
+                    <button className="mt-1 flex w-full items-center justify-between rounded-lg px-3 py-2 text-red-600 hover:bg-red-50">
+                      Sign out
+                      <span className="text-xs text-red-400">⇢</span>
+                    </button>
+                  </div>
+                </div>
+              </nav>
+            </div>
+          </header>
+
+          <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+        </div>
       </body>
     </html>
   );
