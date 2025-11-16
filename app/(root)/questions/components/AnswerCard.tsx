@@ -3,7 +3,14 @@ import VoteButtons from "@/components/VoteButtons";
 import { IAnswer } from "@/database/answer.model";
 import React from "react";
 
-function AnswerCard({ answer }: { answer: IAnswer }) {
+type AnswerCardProps = {
+  answer: IAnswer & {
+    _id: string;
+    userVote?: "upvote" | "downvote" | null;
+  };
+};
+
+function AnswerCard({ answer }: AnswerCardProps) {
   const authorName = ((answer as any)?.author?.name as string) || "Anonymous";
   const upvotes = (answer as any)?.upvotes ?? 0;
   const downvotes = (answer as any)?.downvotes ?? 0;
@@ -31,9 +38,10 @@ function AnswerCard({ answer }: { answer: IAnswer }) {
       <footer className="mt-4 flex items-center justify-between">
         <VoteButtons
           type="answer"
-          typeId={answer?._id}
+          typeId={answer?._id?.toString?.() || ""}
           initialUpvotes={answer.upvotes}
           initialDownvotes={answer.downvotes}
+          initialUserVote={answer?.userVote}
         />
       </footer>
     </article>

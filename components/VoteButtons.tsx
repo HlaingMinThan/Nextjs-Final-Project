@@ -10,28 +10,47 @@ function VoteButtons({
   type,
   initialUpvotes,
   initialDownvotes,
+  initialUserVote,
 }: {
   typeId: string;
   type: "question" | "answer";
   initialUpvotes: number;
   initialDownvotes: number;
+  initialUserVote?: "upvote" | "downvote" | null;
 }) {
-  let [upvotes, setUpvotes] = useState(initialUpvotes);
-  let [downvotes, setDownvotes] = useState(initialDownvotes);
-  let [userVote, setUserVote] = useState<"upvote" | "downvote" | null>(null);
+  const [upvotes, setUpvotes] = useState(initialUpvotes);
+  const [downvotes, setDownvotes] = useState(initialDownvotes);
+  const [userVote, setUserVote] = useState<"upvote" | "downvote" | null>(
+    initialUserVote ?? null
+  );
 
   useEffect(() => {
+    setUpvotes(initialUpvotes);
+    setDownvotes(initialDownvotes);
+  }, [initialDownvotes, initialUpvotes]);
+
+  useEffect(() => {
+    if (initialUserVote === undefined) return;
+    setUserVote(initialUserVote ?? null);
+  }, [initialUserVote]);
+
+  useEffect(() => {
+    if (initialUserVote !== undefined) return;
+    let isMounted = true;
     const fetchUserVote = async () => {
       const { success, data } = await GetUserVote({
         type,
         typeId,
       });
-      if (success && data) {
+      if (success && data && isMounted) {
         setUserVote(data.userVote);
       }
     };
     fetchUserVote();
-  }, [type, typeId]);
+    return () => {
+      isMounted = false;
+    };
+  }, [type, typeId, initialUserVote]);
 
   let handleVote = async (voteType: "upvote" | "downvote") => {
     try {
