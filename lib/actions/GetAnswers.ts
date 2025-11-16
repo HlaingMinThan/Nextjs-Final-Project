@@ -61,8 +61,11 @@ const GetAnswers = async (params: {
 
     const userId = authSession?.user?.id;
     let answersWithMeta: (IAnswer & {
-      userVote?: "upvote" | "downvote" | null;
-    })[] = JSON.parse(JSON.stringify(answers));
+      userVote: "upvote" | "downvote" | null;
+    })[] = JSON.parse(JSON.stringify(answers)).map((answer: IAnswer) => ({
+      ...answer,
+      userVote: null,
+    }));
 
     if (userId && answers.length) {
       const answerIds = answers.map((answer) => answer._id);
@@ -82,7 +85,7 @@ const GetAnswers = async (params: {
 
       answersWithMeta = answersWithMeta.map((answer) => ({
         ...answer,
-        userVote: voteMap.get(answer._id.toString()) || null,
+        userVote: voteMap.get(answer._id.toString()) ?? null,
       }));
     }
 
