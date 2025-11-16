@@ -10,6 +10,8 @@ const ROUTES = {
   REGISTER: "/register",
   COMMUNITY: "/community",
   BOOKMARKS: "/bookmarks",
+  SETTINGS: "/settings",
+  REPUTATION: "/reputation",
 };
 
 export default ROUTES;
