@@ -20,17 +20,19 @@ export async function signUpWithCredentials(params: {
   console.log("db connected");
   const session = await mongoose.startSession();
   session.startTransaction();
+  let transactionCommitted = false;
 
   try {
     const validatedData = validateBody(params, SignUpSchema);
     const { name, email, username, password } = validatedData.data;
 
-    const existingUser = await User.findOne({ email });
+    // Check for existing user/username within transaction
+    const existingUser = await User.findOne({ email }).session(session);
     if (existingUser) {
       throw new Error("Email Already Exists");
     }
 
-    const existingUserName = await User.findOne({ username });
+    const existingUserName = await User.findOne({ username }).session(session);
     if (existingUserName) {
       throw new Error("Username Already Exists");
     }
@@ -64,12 +66,25 @@ export async function signUpWithCredentials(params: {
     );
 
     await session.commitTransaction();
-    await signIn("credentials", { email, password, redirect: false });
+    transactionCommitted = true;
+    await session.endSession();
+
+    // Sign in after transaction is committed and session is ended
+    try {
+      await signIn("credentials", { email, password, redirect: false });
+    } catch (signInError) {
+      // If sign in fails, the user is still created, just log the error
+      console.error("Sign in failed after registration:", signInError);
+      // Return success anyway since user was created
+    }
+
     return { success: true };
   } catch (error) {
-    await session.abortTransaction();
-    return actionError(error);
-  } finally {
+    // Only abort if transaction hasn't been committed
+    if (!transactionCommitted) {
+      await session.abortTransaction();
+    }
     await session.endSession();
+    return actionError(error);
   }
 }
