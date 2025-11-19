@@ -11,6 +11,8 @@ import AnswerList from "../components/AnswerList";
 import VoteButtons from "@/components/VoteButtons";
 import ToggleBookmark from "../components/ToggleBookmark";
 import { DefaultFilters } from "@/constant/filters";
+import GetUserVote from "@/lib/actions/GetUserVote";
+import { Suspense } from "react";
 
 export default async function page({
   params,
@@ -33,18 +35,23 @@ export default async function page({
     });
   });
 
-  const {
-    success,
-    data: answersData,
-    message: answerError,
-  } = await GetAnswers({
+  // const {
+  //   success,
+  //   data: answersData,
+  //   message: answerError,
+  // } = await GetAnswers({
+  //   page: Number(page),
+  //   pageSize: Number(pageSize),
+  //   filter: filter || DefaultFilters.AnswerFilters,
+  //   questionId: id,
+  // });
+
+  const GetAnswersPromise = GetAnswers({
     page: Number(page),
     pageSize: Number(pageSize),
     filter: filter || DefaultFilters.AnswerFilters,
     questionId: id,
   });
-
-  const { answers = [], totalAnswers = 0, isNext = false } = answersData || {};
 
   // const question = {
   //   id: "q123",
@@ -129,17 +136,24 @@ export default async function page({
 
   if (!question) notFound();
 
+  const GetUserVotePromise = GetUserVote({
+    type: "question",
+    typeId: id,
+  });
   return (
     <div className="p-3">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{question.title}</h1>
         <div className="flex justify-center items-center gap-3 text-xs text-gray-200">
-          <VoteButtons
-            type="question"
-            typeId={id.toString()}
-            initialUpvotes={question.upvotes}
-            initialDownvotes={question.downvotes}
-          />
+          <Suspense fallback={<p>loading...</p>}>
+            <VoteButtons
+              type="question"
+              typeId={id.toString()}
+              initialUpvotes={question.upvotes}
+              GetUserVotePromise={GetUserVotePromise}
+              initialDownvotes={question.downvotes}
+            />
+          </Suspense>
           <div>{question.answers} Answers</div>
           <div>{question.views} Views</div>
           <div>
@@ -159,13 +173,12 @@ export default async function page({
         ))}
       </div>
       <div className="my-3">
-        <AnswerList
-          answers={answers}
-          totalAnswers={totalAnswers}
-          success={success}
-          errorMessage={answerError}
-        />
-        <Pagination isNext={isNext} page={page || 1} />
+        <Suspense fallback={<p>loading...</p>}>
+          <AnswerList
+            GetAnswersPromise={GetAnswersPromise}
+            page={page as number}
+          />
+        </Suspense>
       </div>
       <div className="my-3">
         <AnswerForm
