@@ -8,9 +8,11 @@ import { success } from "zod/v4";
 import Pagination from "@/components/Pagination";
 
 function AnswerList({
+  isLoggedIn,
   GetAnswersPromise,
   page,
 }: {
+  isLoggedIn: boolean;
   GetAnswersPromise: Promise<{
     success: boolean;
     data?: {
@@ -42,7 +44,13 @@ function AnswerList({
         data={answers}
         render={(answers) => {
           return answers.map((answer) => {
-            return <AnswerCard key={answer._id.toString()} answer={answer} />;
+            return (
+              <AnswerCard
+                key={answer._id.toString()}
+                answer={answer}
+                isLoggedIn={isLoggedIn}
+              />
+            );
           });
         }}
       />

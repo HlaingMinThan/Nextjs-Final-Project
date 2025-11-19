@@ -4,16 +4,25 @@ import { IAnswer } from "@/database/answer.model";
 import GetUserVote from "@/lib/actions/GetUserVote";
 import React, { Suspense } from "react";
 
-function AnswerCard({ answer }: { answer: IAnswer }) {
+function AnswerCard({
+  answer,
+  isLoggedIn,
+}: {
+  answer: IAnswer;
+  isLoggedIn: boolean;
+}) {
   const authorName = ((answer as any)?.author?.name as string) || "Anonymous";
   const upvotes = (answer as any)?.upvotes ?? 0;
   const downvotes = (answer as any)?.downvotes ?? 0;
 
   const initial = authorName?.charAt(0)?.toUpperCase?.() || "?";
-  const GetUserVotePromise = GetUserVote({
-    type: "answer",
-    typeId: answer._id,
-  });
+  let GetUserVotePromise = null;
+  if (isLoggedIn) {
+    GetUserVotePromise = GetUserVote({
+      type: "answer",
+      typeId: answer._id,
+    });
+  }
   return (
     <article className="w-full  border-b-[0.5px] border-tertiary  shadow-sm transition hover:shadow  border-tertiary-800 dark:bg-tertiary-900 my-5 py-6">
       <header className="mb-3 flex items-center gap-3">
@@ -33,15 +42,17 @@ function AnswerCard({ answer }: { answer: IAnswer }) {
       </div>
 
       <footer className="mt-4 flex items-center justify-between">
-        <Suspense fallback={<p>loading...</p>}>
-          <VoteButtons
-            GetUserVotePromise={GetUserVotePromise}
-            type="answer"
-            typeId={answer?._id}
-            initialUpvotes={answer.upvotes}
-            initialDownvotes={answer.downvotes}
-          />
-        </Suspense>
+        {isLoggedIn && GetUserVotePromise && (
+          <Suspense fallback={<p>loading...</p>}>
+            <VoteButtons
+              GetUserVotePromise={GetUserVotePromise}
+              type="answer"
+              typeId={answer?._id}
+              initialUpvotes={answer.upvotes}
+              initialDownvotes={answer.downvotes}
+            />
+          </Suspense>
+        )}
       </footer>
     </article>
   );

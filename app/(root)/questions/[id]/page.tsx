@@ -13,6 +13,7 @@ import ToggleBookmark from "../components/ToggleBookmark";
 import { DefaultFilters } from "@/constant/filters";
 import GetUserVote from "@/lib/actions/GetUserVote";
 import { Suspense } from "react";
+import { auth } from "@/auth";
 
 export default async function page({
   params,
@@ -134,26 +135,32 @@ export default async function page({
   //   },
   // };
 
+  let session = await auth();
   if (!question) notFound();
 
-  const GetUserVotePromise = GetUserVote({
-    type: "question",
-    typeId: id,
-  });
+  let GetUserVotePromise = null;
+  if (session) {
+    GetUserVotePromise = GetUserVote({
+      type: "question",
+      typeId: id,
+    });
+  }
   return (
     <div className="p-3">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{question.title}</h1>
         <div className="flex justify-center items-center gap-3 text-xs text-gray-200">
-          <Suspense fallback={<p>loading...</p>}>
-            <VoteButtons
-              type="question"
-              typeId={id.toString()}
-              initialUpvotes={question.upvotes}
-              GetUserVotePromise={GetUserVotePromise}
-              initialDownvotes={question.downvotes}
-            />
-          </Suspense>
+          {session && GetUserVotePromise && (
+            <Suspense fallback={<p>loading...</p>}>
+              <VoteButtons
+                type="question"
+                typeId={id.toString()}
+                initialUpvotes={question.upvotes}
+                GetUserVotePromise={GetUserVotePromise}
+                initialDownvotes={question.downvotes}
+              />
+            </Suspense>
+          )}
           <div>{question.answers} Answers</div>
           <div>{question.views} Views</div>
           <div>
@@ -175,6 +182,7 @@ export default async function page({
       <div className="my-3">
         <Suspense fallback={<p>loading...</p>}>
           <AnswerList
+            isLoggedIn={!!session}
             GetAnswersPromise={GetAnswersPromise}
             page={page as number}
           />
