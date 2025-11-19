@@ -23,9 +23,20 @@ export default async function page({
 }) {
   const { id } = await params;
   const { page = 1, pageSize = 10, filter = "" } = await searchParams;
-  let { data: question } = await GetQuestion({
-    questionId: id,
-  });
+
+  const [questionResponse, answersResponse] = await Promise.all([
+    GetQuestion({
+      questionId: id,
+    }),
+    GetAnswers({
+      page: Number(page),
+      pageSize: Number(pageSize),
+      filter: filter || DefaultFilters.AnswerFilters,
+      questionId: id,
+    }),
+  ]);
+
+  let { data: question } = questionResponse;
 
   after(async () => {
     await incrementViews({
@@ -33,16 +44,7 @@ export default async function page({
     });
   });
 
-  const {
-    success,
-    data: answersData,
-    message: answerError,
-  } = await GetAnswers({
-    page: Number(page),
-    pageSize: Number(pageSize),
-    filter: filter || DefaultFilters.AnswerFilters,
-    questionId: id,
-  });
+  const { success, data: answersData, message: answerError } = answersResponse;
 
   const { answers = [], totalAnswers = 0, isNext = false } = answersData || {};
 
@@ -139,6 +141,7 @@ export default async function page({
             typeId={id.toString()}
             initialUpvotes={question.upvotes}
             initialDownvotes={question.downvotes}
+            initialUserVote={question.userVote}
           />
           <div>{question.answers} Answers</div>
           <div>{question.views} Views</div>
