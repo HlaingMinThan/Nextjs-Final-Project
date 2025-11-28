@@ -2,8 +2,15 @@ import Preview from "@/components/Preview";
 import VoteButtons from "@/components/VoteButtons";
 import { IAnswer } from "@/database/answer.model";
 import React from "react";
+import Actions from "@/components/Actions";
 
-function AnswerCard({ answer }: { answer: IAnswer }) {
+function AnswerCard({ 
+  answer,
+  showActions = false 
+}: { 
+  answer: IAnswer;
+  showActions?: boolean;
+}) {
   const authorName = ((answer as any)?.author?.name as string) || "Anonymous";
   const upvotes = (answer as any)?.upvotes ?? 0;
   const downvotes = (answer as any)?.downvotes ?? 0;
@@ -34,6 +41,11 @@ function AnswerCard({ answer }: { answer: IAnswer }) {
           typeId={answer?._id}
           initialUpvotes={answer.upvotes}
           initialDownvotes={answer.downvotes}
+        />
+        <Actions 
+          type="answer" 
+          typeId={answer?._id as string} 
+          showActions={showActions} 
         />
       </footer>
     </article>

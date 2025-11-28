@@ -10,12 +10,19 @@ import TagCard from "./TagCard";
 import { IQuestionDoc } from "@/database/question.model";
 import Link from "next/link";
 import ROUTES from "@/routes";
+import Actions from "./Actions";
 
-function ThreadCard({ question }: { question: IQuestionDoc }) {
+function ThreadCard({
+  question,
+  showActions = false,
+}: {
+  question: IQuestionDoc;
+  showActions?: boolean;
+}) {
   return (
     <div className="space-y-7 rounded-xl bg-card px-10 py-5 my-3">
       <Link
-        href={ROUTES.QUESTION_DETAILS(question._id)}
+        href={ROUTES.QUESTION_DETAILS(question._id as string)}
         className="hover:text-main"
       >
         <h1 className="text-xl font-bold">{question.title}</h1>
@@ -57,6 +64,11 @@ function ThreadCard({ question }: { question: IQuestionDoc }) {
             </span>
             <span>{question.views} Views</span>
           </div>
+          <Actions
+            type="question"
+            typeId={question._id as string}
+            showActions={showActions}
+          />
         </div>
       </div>
     </div>

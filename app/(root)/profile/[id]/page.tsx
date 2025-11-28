@@ -8,6 +8,7 @@ import getUserAnswers from "@/lib/actions/GetUserAnswers";
 import AnswerCard from "../../questions/components/AnswerCard";
 import Link from "next/link";
 import Pagination from "@/components/Pagination";
+import { auth } from "@/auth";
 
 const Page = async ({
   params,
@@ -60,6 +61,8 @@ const Page = async ({
     isNextValue = isNext;
   }
 
+  const user_session = await auth();
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <ProfileHeader user={user} totals={{ totalQuestions, totalAnswers }} />
@@ -90,7 +93,11 @@ const Page = async ({
             errorMessage={errorMessage}
             render={(questions) =>
               questions.map((question) => (
-                <ThreadCard key={question._id} question={question} />
+                <ThreadCard
+                  key={question._id}
+                  question={question}
+                  showActions={user_session?.user?.id === question.author._id}
+                />
               ))
             }
           />
@@ -104,7 +111,11 @@ const Page = async ({
             errorMessage={errorMessage}
             render={(answers) =>
               answers.map((answer) => (
-                <AnswerCard key={answer._id.toString()} answer={answer} />
+                <AnswerCard
+                  key={answer._id.toString()}
+                  answer={answer}
+                  showActions={user_session?.user?.id === answer.author._id}
+                />
               ))
             }
           />
