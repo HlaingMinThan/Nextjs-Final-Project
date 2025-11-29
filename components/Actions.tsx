@@ -4,7 +4,19 @@ import React from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Link from "next/link";
 import ROUTES from "@/routes";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import deleteQuestion from "@/lib/actions/deleteQuestion";
+import { Bounce, toast } from "react-toastify";
 interface ActionsProps {
   type: "question" | "answer";
   typeId: string;
@@ -17,8 +29,39 @@ function Actions({ type, typeId, showActions }: ActionsProps) {
   }
 
   const deleteAction = async () => {
-    // Empty logic for now - will be implemented later
-    console.log(`action for ${type} with id: ${typeId}`);
+    try {
+      let { success } = await deleteQuestion({
+        questionId: typeId,
+      });
+
+      if (success) {
+        toast.success("Delete Question successfully.", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        toast.error(e.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Bounce,
+        });
+      }
+    }
   };
 
   return (
@@ -32,14 +75,28 @@ function Actions({ type, typeId, showActions }: ActionsProps) {
           <span>Edit</span>
         </Link>
       )}
-      <button
-        onClick={deleteAction}
-        className="flex items-center gap-1 text-sm text-gray-400 hover:text-red-500 transition-colors"
-        type="button"
-      >
-        <FaTrash className="w-4 h-4" />
-        <span>Delete</span>
-      </button>
+
+      <AlertDialog>
+        <AlertDialogTrigger className="flex space-x-2 items-center text-sm">
+          <FaTrash className="w-3 h-3" />
+          <span>Delete</span>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={deleteAction}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
