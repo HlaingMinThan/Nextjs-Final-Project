@@ -1,13 +1,15 @@
 import Preview from "@/components/Preview";
 import VoteButtons from "@/components/VoteButtons";
 import { IAnswer } from "@/database/answer.model";
-import React from "react";
+import React, { Suspense } from "react";
 import Actions from "@/components/Actions";
+import GetUserVote from "@/lib/actions/GetUserVote";
+import { id } from "zod/v4/locales";
 
-function AnswerCard({ 
+function AnswerCard({
   answer,
-  showActions = false 
-}: { 
+  showActions = false,
+}: {
   answer: IAnswer;
   showActions?: boolean;
 }) {
@@ -36,16 +38,22 @@ function AnswerCard({
       </div>
 
       <footer className="mt-4 flex items-center justify-between">
-        <VoteButtons
+        <Suspense fallback={<div>loading...</div>}>
+          <VoteButtons
+            GetUserVotePromise={GetUserVote({
+              type: "answer",
+              typeId: answer?._id,
+            })}
+            type="answer"
+            typeId={answer?._id}
+            initialUpvotes={answer.upvotes}
+            initialDownvotes={answer.downvotes}
+          />
+        </Suspense>
+        <Actions
           type="answer"
-          typeId={answer?._id}
-          initialUpvotes={answer.upvotes}
-          initialDownvotes={answer.downvotes}
-        />
-        <Actions 
-          type="answer" 
-          typeId={answer?._id as string} 
-          showActions={showActions} 
+          typeId={answer?._id as string}
+          showActions={showActions}
         />
       </footer>
     </article>

@@ -11,6 +11,8 @@ import AnswerList from "../components/AnswerList";
 import VoteButtons from "@/components/VoteButtons";
 import ToggleBookmark from "../components/ToggleBookmark";
 import { DefaultFilters } from "@/constant/filters";
+import { Suspense } from "react";
+import GetUserVote from "@/lib/actions/GetUserVote";
 
 export default async function page({
   params,
@@ -134,12 +136,18 @@ export default async function page({
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{question.title}</h1>
         <div className="flex justify-center items-center gap-3 text-xs text-gray-200">
-          <VoteButtons
-            type="question"
-            typeId={id.toString()}
-            initialUpvotes={question.upvotes}
-            initialDownvotes={question.downvotes}
-          />
+          <Suspense fallback={<div>loading...</div>}>
+            <VoteButtons
+              GetUserVotePromise={GetUserVote({
+                type: "question",
+                typeId: id,
+              })}
+              type="question"
+              typeId={id.toString()}
+              initialUpvotes={question.upvotes}
+              initialDownvotes={question.downvotes}
+            />
+          </Suspense>
           <div>{question.answers} Answers</div>
           <div>{question.views} Views</div>
           <div>
