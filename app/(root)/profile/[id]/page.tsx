@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import GetUser from "@/lib/actions/GetUser";
 import ProfileHeader from "../components/ProfileHeader";
 import getUserQuestions from "@/lib/actions/getUserQuestions";
@@ -18,20 +18,10 @@ const Page = async ({
   searchParams: { tab: string; page: string };
 }) => {
   const { id } = params;
-  const result = await GetUser({ userId: id });
+
   const activeTab = searchParams.tab || "questions";
   let page = searchParams.page || 1;
   page = Number(page);
-
-  if (!result.success || !result.data) {
-    return (
-      <div className="mx-auto max-w-5xl px-4 py-10 text-zinc-700 dark:text-zinc-300">
-        Failed to load user.
-      </div>
-    );
-  }
-
-  const { user, totalQuestions, totalAnswers } = result.data;
 
   let isSuccess;
   let dataForLoop;
@@ -65,7 +55,9 @@ const Page = async ({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
-      <ProfileHeader user={user} totals={{ totalQuestions, totalAnswers }} />
+      <Suspense fallback={<>loading...</>}>
+        <ProfileHeader userId={id} />
+      </Suspense>
 
       <div className="my-7 space-x-5">
         <Link

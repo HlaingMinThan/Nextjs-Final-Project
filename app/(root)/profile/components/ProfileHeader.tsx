@@ -1,8 +1,6 @@
 import React from "react";
-import type { Iuser } from "@/database/user.model";
-import ButtonLink from "@/components/ButtonLink";
-import ROUTES from "@/routes";
 import Button from "@/components/Button";
+import GetUser from "@/lib/actions/GetUser";
 
 //HLinag min than -> H
 function getInitials(name?: string) {
@@ -13,16 +11,17 @@ function getInitials(name?: string) {
   return (first + last).toUpperCase() || "U";
 }
 
-const ProfileHeader = ({
-  user,
-  totals,
-}: {
-  user: Iuser;
-  totals: {
-    totalQuestions: number;
-    totalAnswers: number;
-  };
-}) => {
+const ProfileHeader = async ({ userId }: { userId: string }) => {
+  const result = await GetUser({ userId });
+  if (!result.success || !result.data) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-10 text-zinc-700 dark:text-zinc-300">
+        Failed to load user.
+      </div>
+    );
+  }
+
+  const { user, totalQuestions, totalAnswers } = result.data;
   const { name, username, bio, image, location, portfolio, reputation } = user;
 
   return (
@@ -102,7 +101,7 @@ const ProfileHeader = ({
             Questions
           </div>
           <div className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-            {totals.totalQuestions}
+            {totalQuestions}
           </div>
         </div>
         <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
@@ -110,7 +109,7 @@ const ProfileHeader = ({
             Answers
           </div>
           <div className="mt-1 text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-            {totals.totalAnswers}
+            {totalAnswers}
           </div>
         </div>
         <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
