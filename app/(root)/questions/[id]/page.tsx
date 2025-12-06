@@ -13,6 +13,24 @@ import ToggleBookmark from "../components/ToggleBookmark";
 import { DefaultFilters } from "@/constant/filters";
 import { Suspense } from "react";
 import GetUserVote from "@/lib/actions/GetUserVote";
+import { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  let { data: question } = await GetQuestion({
+    questionId: id,
+  });
+
+  return {
+    title: question?.title,
+    description: question?.content.slice(0, 100),
+  };
+}
 
 export default async function page({
   params,

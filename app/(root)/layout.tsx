@@ -3,6 +3,12 @@ import React, { ReactNode } from "react";
 import LeftSidebar from "@/components/LeftSidebar";
 import Navbar from "@/components/Navbar";
 import RightSidebar from "@/components/RightSidebar";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Creative Coder Forum",
+  description: "A forum for developers",
+};
 
 function layout({ children }: { children: ReactNode }) {
   return (
