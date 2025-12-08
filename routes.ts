@@ -10,6 +10,7 @@ const ROUTES = {
   REGISTER: "/register",
   COMMUNITY: "/community",
   BOOKMARKS: "/bookmarks",
+  TECH_NEWS: "/tech-news",
 };
 
 export default ROUTES;

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaNewspaper } from "react-icons/fa";
 
 import ROUTES from "@/routes";
 
@@ -60,6 +60,19 @@ function SidebarNav({ isAuthenticated }: SidebarNavProps) {
         >
           <FaHome />
           <span>Popular Questions</span>
+        </Link>
+      </li>
+      <li
+        className={`rounded-xl p-3 ${
+          isActive(ROUTES.TECH_NEWS) ? "bg-main" : "bg-primary"
+        }`}
+      >
+        <Link
+          href={ROUTES.TECH_NEWS}
+          className="flex items-center space-x-4 text-[16px] font-bold"
+        >
+          <FaNewspaper />
+          <span>Tech News</span>
         </Link>
       </li>
       {isAuthenticated && (
