@@ -8,34 +8,40 @@ import GetQuestionSchema from "../schemas/GetQuestionSchema";
 import validateBody from "../validateBody";
 import Collection from "@/database/collection.model";
 import { auth } from "@/auth";
+import { cache } from "react";
 
-export async function GetQuestion(params: { questionId: string }): Promise<{
-  success: Boolean;
-  data?: IQuestion;
-}> {
-  await dbConnect();
-  const validatedData = validateBody(params, GetQuestionSchema);
-  const { questionId } = validatedData.data;
+const GetQuestion = cache(
+  async (
+    questionId: string
+  ): Promise<{
+    success: Boolean;
+    data?: IQuestion;
+  }> => {
+    console.log("Hit");
+    await dbConnect();
+    const validatedData = validateBody({ questionId }, GetQuestionSchema);
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
+    try {
+      let question = await Question.findById(questionId).populate("tags");
+      if (!question) {
+        throw new Error("Failed to get a question");
+      }
+      let auth_session = await auth();
 
-  try {
-    let question = await Question.findById(questionId).populate("tags");
-    if (!question) {
-      throw new Error("Failed to get a question");
+      const collection = await Collection.findOne({
+        question: questionId,
+        author: auth_session?.user?.id,
+      });
+      return {
+        success: true,
+        data: { ...JSON.parse(JSON.stringify(question)), saved: !!collection },
+      };
+    } catch (error) {
+      return actionError(error);
     }
-    let auth_session = await auth();
-
-    const collection = await Collection.findOne({
-      question: questionId,
-      author: auth_session?.user?.id,
-    });
-    return {
-      success: true,
-      data: { ...JSON.parse(JSON.stringify(question)), saved: !!collection },
-    };
-  } catch (error) {
-    return actionError(error);
   }
-}
+);
+
+export { GetQuestion };

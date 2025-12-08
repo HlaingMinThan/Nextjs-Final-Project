@@ -22,9 +22,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  let { data: question } = await GetQuestion({
-    questionId: id,
-  });
+  let { data: question } = await GetQuestion(id);
 
   return {
     title: question?.title,
@@ -43,9 +41,7 @@ export default async function page({
 }) {
   const { id } = await params;
   const { page = 1, pageSize = 10, filter = "" } = await searchParams;
-  let { data: question } = await GetQuestion({
-    questionId: id,
-  });
+  let { data: question } = await GetQuestion(id);
 
   after(async () => {
     await incrementViews({
