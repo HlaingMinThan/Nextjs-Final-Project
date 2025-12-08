@@ -53,19 +53,6 @@ export default async function page({
     });
   });
 
-  const {
-    success,
-    data: answersData,
-    message: answerError,
-  } = await GetAnswers({
-    page: Number(page),
-    pageSize: Number(pageSize),
-    filter: filter || DefaultFilters.AnswerFilters,
-    questionId: id,
-  });
-
-  const { answers = [], totalAnswers = 0, isNext = false } = answersData || {};
-
   // const question = {
   //   id: "q123",
   //   title: "How to improve React app performance?",
@@ -185,13 +172,14 @@ export default async function page({
         ))}
       </div>
       <div className="my-3">
-        <AnswerList
-          answers={answers}
-          totalAnswers={totalAnswers}
-          success={success}
-          errorMessage={answerError}
-        />
-        <Pagination isNext={isNext} page={page || 1} />
+        <Suspense fallback={<div>loading...</div>}>
+          <AnswerList
+            page={page as number}
+            pageSize={pageSize as number}
+            filter={filter}
+            id={id}
+          />
+        </Suspense>
       </div>
       <div className="my-3">
         <AnswerForm
