@@ -9,10 +9,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        secondary: "#05061B",
+        primary: "#081338",
+        main: "#0092EF",
+        card: "#070E27",
+        tertiary: "#00154A",
       },
     },
   },
-  plugins: [],
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate")],
 } satisfies Config;
