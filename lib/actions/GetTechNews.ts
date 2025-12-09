@@ -31,12 +31,10 @@ const GetTechNews = unstable_cache(
     details?: object | null;
   }> => {
     try {
-      console.log("hit ");
       // Construct the API URL - use localhost for development, or get from env
-      const baseUrl =
-        process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}`
-          : "http://localhost:3000";
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+        ? process.env.NEXT_PUBLIC_APP_URL
+        : "http://localhost:3000";
 
       const response = await fetch(`${baseUrl}/api/tech-news`, {
         cache: "no-store", // auto no cache
