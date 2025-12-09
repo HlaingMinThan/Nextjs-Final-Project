@@ -5,33 +5,12 @@ export const revalidate = 10;
 import React from "react";
 import TechNewsCard from "./components/TechNewsCard";
 import DataRenderer from "@/components/DataRenderer";
+import GetTechNews from "@/lib/actions/GetTechNews";
 
 async function page() {
-  let articles = [];
-  let success = false;
-  let errorMessage = "";
-
-  try {
-    // Construct the API URL - use localhost for development, or get from env
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000";
-
-    const response = await fetch(`${baseUrl}/api/tech-news`); //auto no cache
-
-    const data = await response.json();
-
-    if (data.success) {
-      articles = data.data || [];
-      success = true;
-    } else {
-      errorMessage = data.message || "Failed to load tech news";
-    }
-  } catch (error) {
-    errorMessage =
-      error instanceof Error ? error.message : "Failed to load tech news";
-  }
+  const { success, data, message } = await GetTechNews();
+  const articles = data?.articles || [];
+  const errorMessage = message || "";
 
   return (
     <>

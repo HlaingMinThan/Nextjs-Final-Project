@@ -25,7 +25,6 @@ export async function GET() {
 
     // Shuffle the articles array
     const shuffledArticles = shuffleArray(articles);
-
     // Delay response by 2 seconds
     await new Promise((resolve) => setTimeout(resolve, 2000));
 

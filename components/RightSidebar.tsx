@@ -1,5 +1,6 @@
 import GetPopularQuestions from "@/lib/actions/GetPopularQuestions";
 import GetPopularTags from "@/lib/actions/GetPopularTags";
+import GetTechNews from "@/lib/actions/GetTechNews";
 import React from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import {
@@ -23,6 +24,14 @@ async function RightSidebar() {
     message: errorTag,
   } = await GetPopularTags();
   let { tags = [] } = dataTags || {};
+  let {
+    success: successTechNews,
+    data: dataTechNews,
+    message: errorTechNews,
+  } = await GetTechNews();
+  let { articles = [] } = dataTechNews || {};
+  // Get first 10 articles
+  const techNewsTitles = articles.slice(0, 10);
 
   return (
     <div className="p-5">
@@ -78,6 +87,29 @@ async function RightSidebar() {
             ))
           }
         />
+      </div>
+      <div className="mt-5">
+        <h1 className="text-xl font-bold">Tech News</h1>
+        <div className="mt-5 space-y-3 pl-3">
+          <DataRenderer
+            success={successTechNews}
+            data={techNewsTitles}
+            errorMessage={errorTechNews}
+            render={(articles) =>
+              articles.map((article: any) => (
+                <a
+                  key={article.id}
+                  href={article.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block line-clamp-1 text-sm hover:text-main transition-colors my-3 underline "
+                >
+                  {article.title}
+                </a>
+              ))
+            }
+          />
+        </div>
       </div>
     </div>
   );
